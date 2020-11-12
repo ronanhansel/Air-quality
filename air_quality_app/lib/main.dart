@@ -1,4 +1,3 @@
-import 'package:air_quality/pages/air_quality.dart';
 import 'package:air_quality/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Airify',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

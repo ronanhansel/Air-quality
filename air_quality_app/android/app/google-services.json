@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "831440394912",
+    "firebase_url": "https://airify-b9e29.firebaseio.com",
+    "project_id": "airify-b9e29",
+    "storage_bucket": "airify-b9e29.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:831440394912:android:04c71d3afa374806a907c5",
+        "android_client_info": {
+          "package_name": "com.rh.air_quality"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "831440394912-rbtv2jbda5s2rv9rcqadr1b8napmvjv1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpZUcEEgp86Ad-eZTgDfdFI1G0BSaeOdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "831440394912-rbtv2jbda5s2rv9rcqadr1b8napmvjv1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
