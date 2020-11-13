@@ -9,7 +9,7 @@ void setup() {
   carbon_dioxide = analogRead(A1);
   air_quality = analogRead(A2);
   Serial.print(co);
-  Serial.println(" CO");
+  Serial.println(" Gas");
   Serial.print(carbon_dioxide);
   Serial.println(" CO2");
   Serial.print(air_quality);
