@@ -68,17 +68,22 @@ class _HomeState extends State<Home> {
                   )),
                   decoration: NeumorphicDecoration(
                       shape: BoxShape.rectangle,
-                      color: Colors.grey[200],
+                      color: Colors.grey[300],
                       borderRadius: BorderRadius.all(Radius.circular(40))),
                   onPressed: () {
-                    absorb = false;
-                    Timer(
-                        Duration(milliseconds: 300),
-                        () => Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => AirQuality(),
-                            )));
+                    setState(() {
+                      absorb = true;
+                    });
+                    Timer(Duration(milliseconds: 300), () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => AirQuality(),
+                          ));
+                      setState(() {
+                        absorb = false;
+                      });
+                    });
                   },
                 ),
               ),

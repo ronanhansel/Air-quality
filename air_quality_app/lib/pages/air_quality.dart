@@ -133,15 +133,17 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                         child: _riveArtboard == null
                                             ? const SizedBox()
                                             : NeuCard(
-                                          color: Color(0xffe0e5ec),
-                                              child: ClipRRect(
-                                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                                                child: Rive(
+                                                color: Colors.grey[300],
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(20)),
+                                                  child: Rive(
                                                     fit: BoxFit.fitWidth,
                                                     artboard: _riveArtboard,
                                                   ),
+                                                ),
                                               ),
-                                            ),
                                       ),
                                     ),
                                   ),
@@ -155,30 +157,67 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                     children: [
                                       Expanded(
                                         flex: 3,
-                                        child: NeuCard(
+                                        child: Container(
                                           height: 200,
-                                          color: Color(0xffecf0f3),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Text(
-                                              'CO level: ',
-                                              style: TextStyle(fontSize: 20),
+                                          child: NeuButton(
+                                            decoration: NeumorphicDecoration(
+                                                color: Colors.grey[300],
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(20))),
+                                            onPressed: () {},
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: Stack(
+                                                children: [
+                                                  Text(
+                                                    'CO level',
+                                                    style:
+                                                        TextStyle(fontSize: 20),
+                                                  ),
+                                                  Center(
+                                                    child: Text(
+                                                      '$seven',
+                                                      style: TextStyle(
+                                                          fontSize: 40),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                      Expanded(
-                                          child: SizedBox()),
+                                      Expanded(child: SizedBox()),
                                       Expanded(
                                         flex: 3,
-                                        child: NeuCard(
+                                        child: Container(
                                           height: 200,
-                                          color: Color(0xffecf0f3),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Text(
-                                              'Natural Gas Level: ',
-                                              style: TextStyle(fontSize: 20),
+                                          child: NeuButton(
+                                            decoration: NeumorphicDecoration(
+                                                color: Colors.grey[300],
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(20))),
+                                            onPressed: () {},
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: Stack(
+                                                children: [
+                                                  Text(
+                                                    'Natural Gas level',
+                                                    style:
+                                                        TextStyle(fontSize: 20),
+                                                  ),
+                                                  Center(
+                                                    child: Text(
+                                                      '$five',
+                                                      style: TextStyle(
+                                                          fontSize: 40),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -186,7 +225,6 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                     ],
                                   ),
                                 ),
-
                               ]))
                             ],
                           ),
