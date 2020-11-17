@@ -1,7 +1,11 @@
 import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:air_quality/algorithms/quality.dart';
+import 'package:air_quality/pages/co.dart';
+import 'package:air_quality/pages/natural.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:rive/rive.dart' hide LinearGradient;
 
@@ -25,7 +29,7 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    getStatus();
+    initial();
     _bgController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 600));
     bgfade = Tween<double>(
@@ -41,13 +45,47 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
     super.initState();
   }
 
-  getStatus() async {
+  void dispose() {
+    _controller.dispose();
+    _scaleController.dispose();
+    super.dispose();
+  }
+
+  getDataRepeat7() async {
+    var number;
+    database.onValue.listen((event) {
+      var snapshot = event.snapshot;
+      number = snapshot.value["7"];
+
+      if (mounted) {
+        setState(() {
+          seven = number;
+        });
+      }
+    });
+    return number;
+  }
+
+  getDataRepeat5() async {
+    var number;
+    database.onValue.listen((event) {
+      var snapshot = event.snapshot;
+      number = snapshot.value["5"];
+      if (mounted) {
+        setState(() {
+          five = number;
+        });
+      }
+    });
+    return number;
+  }
+
+  initial() async {
+    getDataRepeat7();
+    getDataRepeat5();
     onethreefive = await getData(135);
-    seven = await getData(7);
-    five = await getData(5);
     number = onethreefive + seven + five;
     status = await quality135();
-    print(status);
     rootBundle.load('assets/environment.riv').then(
       (data) async {
         var file = RiveFile();
@@ -67,6 +105,7 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     _scaleController.forward();
     _bgController.forward();
+
     return Wrap(
       children: [
         Align(
@@ -84,7 +123,12 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                     builder:
                         (BuildContext context, AsyncSnapshot<Widget> widget) {
                       if (status == null) {
-                        return CircularProgressIndicator();
+                        return Container(
+                            height: 40,
+                            width: 40,
+                            child: SpinKitSquareCircle(
+                              color: Colors.grey,
+                            ));
                       }
                       _bgController.forward();
                       _scaleController.forward();
@@ -157,32 +201,48 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                     children: [
                                       Expanded(
                                         flex: 3,
-                                        child: Container(
-                                          height: 200,
-                                          child: NeuButton(
-                                            decoration: NeumorphicDecoration(
-                                                color: Colors.grey[300],
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20))),
-                                            onPressed: () {},
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(10.0),
-                                              child: Stack(
-                                                children: [
-                                                  Text(
-                                                    'CO level',
-                                                    style:
-                                                        TextStyle(fontSize: 20),
+                                        child: Hero(
+                                          tag: 'co',
+                                          child: Material(
+                                            color: Colors.transparent,
+                                            child: Container(
+                                              height: 200,
+                                              child: NeuButton(
+                                                decoration:
+                                                    NeumorphicDecoration(
+                                                        color: Colors.grey[300],
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    20))),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      CupertinoPageRoute(
+                                                        builder: (context) =>
+                                                            CO(value: seven),
+                                                      ));
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
+                                                  child: Stack(
+                                                    children: [
+                                                      Text(
+                                                        'CO level',
+                                                        style: TextStyle(
+                                                            fontSize: 20),
+                                                      ),
+                                                      Center(
+                                                        child: Text(
+                                                          '$seven',
+                                                          style: TextStyle(
+                                                              fontSize: 40),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  Center(
-                                                    child: Text(
-                                                      '$seven',
-                                                      style: TextStyle(
-                                                          fontSize: 40),
-                                                    ),
-                                                  ),
-                                                ],
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -191,32 +251,49 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                       Expanded(child: SizedBox()),
                                       Expanded(
                                         flex: 3,
-                                        child: Container(
-                                          height: 200,
-                                          child: NeuButton(
-                                            decoration: NeumorphicDecoration(
-                                                color: Colors.grey[300],
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20))),
-                                            onPressed: () {},
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(10.0),
-                                              child: Stack(
-                                                children: [
-                                                  Text(
-                                                    'Natural Gas level',
-                                                    style:
-                                                        TextStyle(fontSize: 20),
+                                        child: Hero(
+                                          tag: 'natural',
+                                          child: Material(
+                                            color: Colors.transparent,
+                                            child: Container(
+                                              height: 200,
+                                              child: NeuButton(
+                                                decoration:
+                                                    NeumorphicDecoration(
+                                                        color: Colors.grey[300],
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    20))),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      CupertinoPageRoute(
+                                                        builder: (context) =>
+                                                            Natural(
+                                                                value: five),
+                                                      ));
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
+                                                  child: Stack(
+                                                    children: [
+                                                      Text(
+                                                        'Natural Gas level',
+                                                        style: TextStyle(
+                                                            fontSize: 20),
+                                                      ),
+                                                      Center(
+                                                        child: Text(
+                                                          '$five',
+                                                          style: TextStyle(
+                                                              fontSize: 40),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  Center(
-                                                    child: Text(
-                                                      '$five',
-                                                      style: TextStyle(
-                                                          fontSize: 40),
-                                                    ),
-                                                  ),
-                                                ],
+                                                ),
                                               ),
                                             ),
                                           ),

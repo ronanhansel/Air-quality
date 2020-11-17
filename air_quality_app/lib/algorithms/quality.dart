@@ -6,7 +6,6 @@ Future<String> quality135 () async {
   int index5 = await getData(5);
   int index7 = await getData(7);
   int index = index5 + index7 + index135;
-  print (index);
   if (index <= 20) {
     status = 'fresh';
     return status;
