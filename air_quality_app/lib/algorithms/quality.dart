@@ -2,10 +2,10 @@ import 'package:air_quality/algorithms/getvalues.dart';
 
 String status;
 Future<String> quality135 () async {
-  double index135 = await getData(135);
-  double index5 = await getData(5);
-  double index7 = await getData(7);
-  double index = index5 + index7 + index135;
+  int index135 = await getData(135);
+  int index5 = await getData(5);
+  int index7 = await getData(7);
+  int index = index5 + index7 + index135;
   print (index);
   if (index <= 20) {
     status = 'fresh';

@@ -2,8 +2,8 @@ import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:air_quality/algorithms/quality.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:neumorphic/neumorphic.dart';
 import 'package:rive/rive.dart' hide LinearGradient;
-import 'package:firebase_database/firebase_database.dart';
 
 class AirQuality extends StatefulWidget {
   @override
@@ -19,6 +19,9 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
   AnimationController _scaleController;
   var status;
   var number;
+  var onethreefive;
+  var five;
+  var seven;
 
   @override
   void initState() {
@@ -39,8 +42,11 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
   }
 
   getStatus() async {
+    onethreefive = await getData(135);
+    seven = await getData(7);
+    five = await getData(5);
+    number = onethreefive + seven + five;
     status = await quality135();
-    number = await getData(135);
     print(status);
     rootBundle.load('assets/environment.riv').then(
       (data) async {
@@ -70,77 +76,125 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [Color(0xFF42E695), Color(0xFF3BB2B8)]),
+                  color: Color(0xffe0e5ec),
                   borderRadius: BorderRadius.all(Radius.circular(0)),
                 ),
                 child: Center(
-                    child: FutureBuilder(
-                      builder: (BuildContext context, AsyncSnapshot<Widget> widget) {
-                        if (status == null) {
-                          return CircularProgressIndicator();
-                        }
-                        _bgController.forward();
-                        _scaleController.forward();
-                        return ScaleTransition(
-                          scale: scale,
-                          child: FadeTransition(
-                            opacity: bgfade,
-                            child: CustomScrollView(
-                              physics: BouncingScrollPhysics(),
-                              slivers: [
-                                SliverAppBar(
-                                  pinned: true,
-                                  expandedHeight: 200,
-                                  stretch: true,
-                                  shape: ContinuousRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                          bottomRight: Radius.circular(40),
-                                          bottomLeft: Radius.circular(40))),
-                                  flexibleSpace:
-                                  FlexibleSpaceBar(stretchModes: [
-                                    StretchMode.fadeTitle,
-                                  ], title: Text('Air quality $number')),
+                  child: FutureBuilder(
+                    builder:
+                        (BuildContext context, AsyncSnapshot<Widget> widget) {
+                      if (status == null) {
+                        return CircularProgressIndicator();
+                      }
+                      _bgController.forward();
+                      _scaleController.forward();
+                      return ScaleTransition(
+                        scale: scale,
+                        child: FadeTransition(
+                          opacity: bgfade,
+                          child: CustomScrollView(
+                            physics: BouncingScrollPhysics(),
+                            slivers: [
+                              SliverList(
+                                  delegate: SliverChildListDelegate([
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: IconButton(
+                                    icon: Icon(Icons.arrow_back_ios),
+                                    onPressed: () => Navigator.pop(context),
+                                  ),
                                 ),
-                                SliverList(
-                                    delegate: SliverChildListDelegate([
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Text('The air quality is $status', style: TextStyle(fontSize: 20),),
-                                      ),
-                                      Container(
-                                        height: 300,
-                                        child: Center(
-                                          child: Container(
-                                            width:
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text('Air quality $number',
+                                      style: TextStyle(
+                                          color: Colors.grey[800],
+                                          fontSize: 40)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                    'The air quality is $status',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                ),
+                                Container(
+                                  height: 300,
+                                  child: Center(
+                                    child: Center(
+                                      child: Container(
+                                        color: Colors.transparent,
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 20.0),
+                                        width:
                                             MediaQuery.of(context).size.width,
-                                            height: MediaQuery.of(context)
-                                                .size
-                                                .height,
-                                            child: _riveArtboard == null
-                                                ? const SizedBox()
-                                                : Rive(
-                                              fit: BoxFit.fitHeight,
-                                              artboard: _riveArtboard,
+                                        height:
+                                            MediaQuery.of(context).size.width,
+                                        child: _riveArtboard == null
+                                            ? const SizedBox()
+                                            : NeuCard(
+                                          color: Color(0xffe0e5ec),
+                                              child: ClipRRect(
+                                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                                                child: Rive(
+                                                    fit: BoxFit.fitWidth,
+                                                    artboard: _riveArtboard,
+                                                  ),
+                                              ),
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 3,
+                                        child: NeuCard(
+                                          height: 200,
+                                          color: Color(0xffecf0f3),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Text(
+                                              'CO level: ',
+                                              style: TextStyle(fontSize: 20),
                                             ),
                                           ),
                                         ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Text('CO level: ', style: TextStyle(fontSize: 20),),
+                                      Expanded(
+                                          child: SizedBox()),
+                                      Expanded(
+                                        flex: 3,
+                                        child: NeuCard(
+                                          height: 200,
+                                          color: Color(0xffecf0f3),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Text(
+                                              'Natural Gas Level: ',
+                                              style: TextStyle(fontSize: 20),
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Text('Natural gas level: ', style: TextStyle(fontSize: 20),),
-                                      ),
-                                    ]))
-                              ],
-                            ),
+                                    ],
+                                  ),
+                                ),
+
+                              ]))
+                            ],
                           ),
-                        );
-                      },
-                    ), )),
+                        ),
+                      );
+                    },
+                  ),
+                )),
           ),
         ),
       ],
