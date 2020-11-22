@@ -35,7 +35,7 @@ def stream_handler(message):
 
         body = {
             'notification': {'title': 'DANGEROUS',
-                             'body': 'CO2 level is dangerously high!'
+                             'body': 'GAS  level is dangerously high!'
                              },
             'to':
                 deviceToken,
