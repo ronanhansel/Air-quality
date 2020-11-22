@@ -28,6 +28,9 @@ dependencies:
   neumorphic: ^0.4.0
   provider: ^4.3.2+2
   flutter_spinkit: ^4.1.2+1
+  firebase_messaging: ^7.0.3
+  pusher_beams_server: ^0.1.4
+
 
 
   # The following adds the Cupertino Icons font to your application.

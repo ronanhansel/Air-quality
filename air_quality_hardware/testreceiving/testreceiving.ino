@@ -40,6 +40,7 @@ void loop()
   if (Serial.available()) {
   number = Serial.readString();
   int n = number.length();
+  Serial.println(n);
   char char_array[n + 1];
   strcpy(char_array, number.c_str());
   char *split = strtok(char_array, " ");
@@ -48,6 +49,10 @@ void loop()
   five = atoi(split);
   seven = atoi(splittwo);
   onethreefive = atoi(splitthree);
+  
+  Serial.println(five);
+  Serial.println(seven);
+  Serial.println(onethreefive);
 
 
   Firebase.setInt("5", five);

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:air_quality/pages/air_quality.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,9 +17,28 @@ class _HomeState extends State<Home> {
   Artboard _riveArtboard;
   RiveAnimationController _controller;
   bool absorb = false;
-
+  final FirebaseMessaging _fcm = FirebaseMessaging();
   @override
   void initState() {
+    _fcm.getToken().then((token){
+      print(token);
+    });
+    //firebase messaging
+    _fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        final snackbar = SnackBar(
+          content: Text(message['notification']['title']),
+          action: SnackBarAction(
+            label: 'Go',
+            onPressed: () => null,
+          )
+        );
+        Scaffold.of(context).showSnackBar(snackbar);
+      }
+    );
+
+
     super.initState();
 
     rootBundle.load('assets/bubles.riv').then(

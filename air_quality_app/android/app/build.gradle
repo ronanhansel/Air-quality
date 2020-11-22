@@ -63,4 +63,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-core:18.0.0'
+    implementation 'com.google.firebase:firebase-messaging:21.0.0'
+    implementation 'com.pusher:push-notifications-android:1.6.2'
 }
+apply plugin: 'com.google.gms.google-services'
