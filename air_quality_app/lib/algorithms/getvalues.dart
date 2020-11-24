@@ -12,12 +12,3 @@ getData(var sensor) async {
   return number;
 }
 
-// getDataRepeat(var sensor) async {
-//   var number;
-//   database.onValue.listen((event) {
-//     var snapshot = event.snapshot;
-//     number = snapshot.value["$sensor"];
-//     print('$number');
-//   });
-//   return number;
-// }

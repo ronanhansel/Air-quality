@@ -1,30 +1,30 @@
-import 'package:air_quality/algorithms/co_quality.dart';
+import 'package:air_quality/algorithms/co2_quality.dart';
 import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:neumorphic/neumorphic.dart';
 
 // ignore: must_be_immutable
-class CO extends StatefulWidget {
+class CO2 extends StatefulWidget {
   var value;
 
-  CO({Key key, this.value}) : super(key: key);
+  CO2({Key key, this.value}) : super(key: key);
 
   @override
-  _COState createState() => _COState();
+  _CO2State createState() => _CO2State();
 }
 
-class _COState extends State<CO> {
-  var co;
+class _CO2State extends State<CO2> {
+  var co2;
 
-  getDataRepeat7() async {
+  getDataRepeat135() async {
     var number;
     database.onValue.listen((event) {
       var snapshot = event.snapshot;
-      number = snapshot.value["7"];
+      number = snapshot.value["135"];
       if (this.mounted) {
         setState(() {
-          co = number;
+          co2 = number;
         });
       }
     });
@@ -33,7 +33,7 @@ class _COState extends State<CO> {
 
   @override
   void initState() {
-    getDataRepeat7();
+    getDataRepeat135();
     super.initState();
   }
 
@@ -61,7 +61,7 @@ class _COState extends State<CO> {
           ),
           Center(
             child: Hero(
-              tag: 'co',
+              tag: 'co2',
               child: Material(
                 color: Colors.transparent,
                 child: Container(
@@ -77,19 +77,19 @@ class _COState extends State<CO> {
                       child: Stack(
                         children: [
                           Text(
-                            'CO level',
+                            'CO2 level',
                             style: TextStyle(fontSize: 20),
                           ),
                           Center(
-                            child: co == null
+                            child: co2 == null
                                 ? Text(
-                              '${widget.value}',
-                              style: TextStyle(fontSize: 40),
-                            )
+                                    '${widget.value}',
+                                    style: TextStyle(fontSize: 40),
+                                  )
                                 : Text(
-                              '$co',
-                              style: TextStyle(fontSize: 40),
-                            ),
+                                    '$co2',
+                                    style: TextStyle(fontSize: 40),
+                                  ),
                           ),
                           Align(
                             alignment: Alignment.bottomRight,
@@ -111,7 +111,7 @@ class _COState extends State<CO> {
           ),
           Center(
             child: Text(
-              '${getcoquad(co ?? 0)}',
+              '${getco2quad(co2 ?? 0)}',
               style: TextStyle(fontSize: 30),
             ),
           ),

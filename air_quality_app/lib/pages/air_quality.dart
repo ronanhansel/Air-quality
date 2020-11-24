@@ -9,6 +9,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:rive/rive.dart' hide LinearGradient;
 
+import 'co2.dart';
+
 class AirQuality extends StatefulWidget {
   @override
   _AirQualityState createState() => _AirQualityState();
@@ -79,12 +81,52 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
     });
     return number;
   }
+  getDataRepeat135() async {
+    var number;
+    database.onValue.listen((event) {
+      var snapshot = event.snapshot;
+      number = snapshot.value["135"];
+      if (mounted) {
+        setState(() {
+          onethreefive = number;
+        });
+      }
+    });
+    return number;
+  }
+  getDataRepeatnumber() async {
+    var number;
+    database.onValue.listen((event) {
+      var snapshot = event.snapshot;
+      number = snapshot.value["135"];
+      if (mounted) {
+        setState(() {
+          onethreefive = number;
+        });
+      }
+    });
+    return number;
+  }
 
+  getSum() async {
+    var no;
+
+    number.listen((event) {
+      no = number;
+          if(mounted) {
+            setState(() {
+              number = no;
+              print('changed');
+            });
+          }
+    });
+  }
   initial() async {
     getDataRepeat7();
     getDataRepeat5();
+    getDataRepeat135();
     onethreefive = await getData(135);
-    number = onethreefive + seven + five;
+
     status = await quality135();
     rootBundle.load('assets/environment.riv').then(
       (data) async {
@@ -105,7 +147,7 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     _scaleController.forward();
     _bgController.forward();
-
+    number = five + seven + onethreefive;
     return Wrap(
       children: [
         Align(
@@ -150,15 +192,29 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(10.0),
-                                  child: Text('Air quality $number',
-                                      style: TextStyle(
-                                          color: Colors.grey[800],
-                                          fontSize: 40)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Air quality',
+                                          style: TextStyle(
+                                              color: Colors.grey[800],
+                                              fontSize: 40)),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Text(' ${number.toStringAsFixed(2)}',
+                                              style: TextStyle(
+                                                  color: Colors.grey[800],
+                                                  fontSize: 40)),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: Text(
-                                    'The air quality is $status',
+                                    'Mức độ chất lượng không khí: $status',
                                     style: TextStyle(fontSize: 20),
                                   ),
                                 ),
@@ -193,55 +249,122 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 20,
+                                  height: 30,
                                 ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Hero(
+                                      tag: 'co2',
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: Container(
+                                          height: 200,
+                                          width: 170,
+                                          child: NeuButton(
+                                            decoration:
+                                            NeumorphicDecoration(
+                                                color: Colors.grey[300],
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        20))),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        CO2(value: onethreefive),
+                                                  ));
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(
+                                                  10.0),
+                                              child: Stack(
+                                                children: [
+                                                  Text(
+                                                    'CO2 level',
+                                                    style: TextStyle(
+                                                        fontSize: 20),
+                                                  ),
+                                                  Center(
+                                                    child: Text(
+                                                      '$onethreefive',
+                                                      style: TextStyle(
+                                                          fontSize: 40),
+                                                    ),
+                                                  ),
+                                                  Align(
+                                                    alignment: Alignment.bottomRight,
+                                                    child: Text(
+                                                      'ppm',
+                                                      style: TextStyle(
+                                                          fontSize: 20),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 20,),
                                 Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: Row(
                                     children: [
-                                      Expanded(
-                                        flex: 3,
-                                        child: Hero(
-                                          tag: 'co',
-                                          child: Material(
-                                            color: Colors.transparent,
-                                            child: Container(
-                                              height: 200,
-                                              child: NeuButton(
-                                                decoration:
-                                                    NeumorphicDecoration(
-                                                        color: Colors.grey[300],
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    20))),
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      CupertinoPageRoute(
-                                                        builder: (context) =>
-                                                            CO(value: seven),
-                                                      ));
-                                                },
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      10.0),
-                                                  child: Stack(
-                                                    children: [
-                                                      Text(
-                                                        'CO level',
+                                      Hero(
+                                        tag: 'co',
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: Container(
+                                            height: 200,
+                                            width: 160,
+                                            child: NeuButton(
+                                              decoration:
+                                                  NeumorphicDecoration(
+                                                      color: Colors.grey[300],
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  20))),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    CupertinoPageRoute(
+                                                      builder: (context) =>
+                                                          CO(value: seven),
+                                                    ));
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                    10.0),
+                                                child: Stack(
+                                                  children: [
+                                                    Text(
+                                                      'CO level',
+                                                      style: TextStyle(
+                                                          fontSize: 20),
+                                                    ),
+                                                    Center(
+                                                      child: Text(
+                                                        '$seven',
+                                                        style: TextStyle(
+                                                            fontSize: 40),
+                                                      ),
+                                                    ),
+                                                    Align(
+                                                      alignment: Alignment.bottomRight,
+                                                      child: Text(
+                                                        'ppm',
                                                         style: TextStyle(
                                                             fontSize: 20),
                                                       ),
-                                                      Center(
-                                                        child: Text(
-                                                          '$seven',
-                                                          style: TextStyle(
-                                                              fontSize: 40),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),
@@ -249,50 +372,56 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                         ),
                                       ),
                                       Expanded(child: SizedBox()),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Hero(
-                                          tag: 'natural',
-                                          child: Material(
-                                            color: Colors.transparent,
-                                            child: Container(
-                                              height: 200,
-                                              child: NeuButton(
-                                                decoration:
-                                                    NeumorphicDecoration(
-                                                        color: Colors.grey[300],
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    20))),
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      CupertinoPageRoute(
-                                                        builder: (context) =>
-                                                            Natural(
-                                                                value: five),
-                                                      ));
-                                                },
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      10.0),
-                                                  child: Stack(
-                                                    children: [
-                                                      Text(
-                                                        'Natural Gas level',
+                                      Hero(
+                                        tag: 'natural',
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: Container(
+                                            height: 200,
+                                            width: 160,
+                                            child: NeuButton(
+                                              decoration:
+                                                  NeumorphicDecoration(
+                                                      color: Colors.grey[300],
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  20))),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    CupertinoPageRoute(
+                                                      builder: (context) =>
+                                                          Natural(
+                                                              value: five),
+                                                    ));
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                    10.0),
+                                                child: Stack(
+                                                  children: [
+                                                    Text(
+                                                      'Natural Gas level',
+                                                      style: TextStyle(
+                                                          fontSize: 20),
+                                                    ),
+                                                    Center(
+                                                      child: Text(
+                                                        '$five',
+                                                        style: TextStyle(
+                                                            fontSize: 40),
+                                                      ),
+                                                    ),
+                                                    Align(
+                                                      alignment: Alignment.bottomRight,
+                                                      child: Text(
+                                                        'ppm',
                                                         style: TextStyle(
                                                             fontSize: 20),
                                                       ),
-                                                      Center(
-                                                        child: Text(
-                                                          '$five',
-                                                          style: TextStyle(
-                                                              fontSize: 40),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),

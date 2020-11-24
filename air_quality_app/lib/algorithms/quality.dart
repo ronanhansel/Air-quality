@@ -2,23 +2,23 @@ import 'package:air_quality/algorithms/getvalues.dart';
 
 String status;
 Future<String> quality135 () async {
-  int index135 = await getData(135);
-  int index5 = await getData(5);
-  int index7 = await getData(7);
-  int index = index5 + index7 + index135;
-  if (index <= 20) {
+  var index135 = await getData(135);
+  var index5 = await getData(5);
+  var index7 = await getData(7);
+  var index = index5 + index7 + index135;
+  if (index <= 500) {
     status = 'fresh';
     return status;
-  } else if (20 <= index && index <= 30) {
+  } else if (500 < index && index <= 700) {
     status = 'quite';
     return status;
-  } else if (30 <= index && index <= 40) {
+  } else if (700 < index && index <= 800) {
     status = 'not good';
     return status;
-  } else if (40 <= index && index <= 50) {
+  } else if (800 < index && index <= 900) {
     status = 'bad';
     return status;
-  } else if (index >= 50) {
+  } else if (index > 900) {
     status = 'hazardous';
     return status;
   } else {

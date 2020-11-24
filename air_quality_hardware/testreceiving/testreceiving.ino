@@ -13,12 +13,11 @@
 #define WIFI_PASSWORD "84568456"
 #define FIREBASE_HOST "airify-b9e29.firebaseio.com"
 #define FIREBASE_AUTH "myh0iX4HQA1TmZZWdRUr6pfObcWGJRK71TwOixZL"
-int five;
-int seven;
-int onethreefive;
-int placeone;
-int placetwo;
-int placethree;
+float five;
+float seven;
+float onethreefive;
+float humid;
+float temp;
 String number;
 
 SoftwareSerial s(3,1);
@@ -46,18 +45,19 @@ void loop()
   char *split = strtok(char_array, " ");
   char *splittwo = strtok(NULL, " ");
   char *splitthree = strtok(NULL, " ");
-  five = atoi(split);
-  seven = atoi(splittwo);
-  onethreefive = atoi(splitthree);
-  
-  Serial.println(five);
-  Serial.println(seven);
-  Serial.println(onethreefive);
+  char *splitfour = strtok(NULL, " ");
+  char *splitfive = strtok(NULL, " ");
+  five = atof(split);
+  seven = atof(splittwo);
+  onethreefive = atof(splitthree);
+  humid = atof(splitfour);
+  temp = atof(splitfive);
 
-
-  Firebase.setInt("5", five);
-  Firebase.setInt("7", seven); 
-  Firebase.setInt("135", onethreefive);
+  Firebase.setFloat("5", five);
+  Firebase.setFloat("7", seven); 
+  Firebase.setFloat("135", onethreefive);
+  Firebase.setFloat("humid", humid);
+  Firebase.setFloat("temp", temp);
   
 
 

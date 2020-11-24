@@ -1,3 +1,5 @@
+import 'package:air_quality/algorithms/co2_quality.dart';
+import 'package:air_quality/algorithms/gas_quality.dart';
 import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -7,14 +9,14 @@ import 'package:neumorphic/neumorphic.dart';
 class Natural extends StatefulWidget {
   var value;
 
-  Natural({Key key, this.value}) : super (key: key);
+  Natural({Key key, this.value}) : super(key: key);
 
   @override
   _NaturalState createState() => _NaturalState();
 }
 
 class _NaturalState extends State<Natural> {
-  var nat;
+  var gas;
 
   getDataRepeat5() async {
     var number;
@@ -23,7 +25,7 @@ class _NaturalState extends State<Natural> {
       number = snapshot.value["5"];
       if (this.mounted) {
         setState(() {
-          nat = number;
+          gas = number;
         });
       }
     });
@@ -39,7 +41,8 @@ class _NaturalState extends State<Natural> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: ListView(
+        physics: BouncingScrollPhysics(),
         children: [
           Column(
             children: [
@@ -53,6 +56,9 @@ class _NaturalState extends State<Natural> {
                 ),
               ),
             ],
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 5,
           ),
           Center(
             child: Hero(
@@ -76,15 +82,22 @@ class _NaturalState extends State<Natural> {
                             style: TextStyle(fontSize: 20),
                           ),
                           Center(
-                            child: nat == null
+                            child: gas == null
                                 ? Text(
-                                    '${widget.value}',
-                                    style: TextStyle(fontSize: 40),
-                                  )
+                              '${widget.value}',
+                              style: TextStyle(fontSize: 40),
+                            )
                                 : Text(
-                                    '$nat',
-                                    style: TextStyle(fontSize: 40),
-                                  ),
+                              '$gas',
+                              style: TextStyle(fontSize: 40),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Text(
+                              'ppm',
+                              style: TextStyle(fontSize: 20),
+                            ),
                           ),
                         ],
                       ),
@@ -94,8 +107,18 @@ class _NaturalState extends State<Natural> {
               ),
             ),
           ),
+          SizedBox(
+            height: 30,
+          ),
+          Center(
+            child: Text(
+              '${getgasquad(gas ?? 0)}',
+              style: TextStyle(fontSize: 30),
+            ),
+          ),
         ],
       ),
+
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:air_quality/pages/air_quality.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,31 +19,33 @@ class _HomeState extends State<Home> {
   RiveAnimationController _controller;
   bool absorb = false;
   final FirebaseMessaging _fcm = FirebaseMessaging();
+  var humid;
+  var temp;
+
   @override
   void initState() {
-    _fcm.getToken().then((token){
+    _fcm.getToken().then((token) {
       print(token);
     });
     //firebase messaging
-    _fcm.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        final snackbar = SnackBar(
+    _fcm.configure(onMessage: (Map<String, dynamic> message) async {
+      print("onMessage: $message");
+      final snackbar = SnackBar(
           content: Text(message['notification']['title']),
           action: SnackBarAction(
             label: 'Go',
             onPressed: () => null,
-          )
-        );
-        Scaffold.of(context).showSnackBar(snackbar);
-      }
-    );
-
+          ));
+      Scaffold.of(context).showSnackBar(snackbar);
+    });
 
     super.initState();
 
     rootBundle.load('assets/bubles.riv').then(
       (data) async {
+        await getDataRepeatHumid();
+        await getDataRepeatTemp();
+
         var file = RiveFile();
         var success = file.import(data);
         if (success) {
@@ -54,6 +57,34 @@ class _HomeState extends State<Home> {
         }
       },
     );
+  }
+
+  getDataRepeatHumid() async {
+    var number;
+    database.onValue.listen((event) {
+      var snapshot = event.snapshot;
+      number = snapshot.value["humid"];
+      if (mounted) {
+        setState(() {
+          humid = number;
+        });
+      }
+    });
+    return number;
+  }
+
+  getDataRepeatTemp() async {
+    var number;
+    database.onValue.listen((event) {
+      var snapshot = event.snapshot;
+      number = snapshot.value["temp"];
+      if (mounted) {
+        setState(() {
+          temp = number;
+        });
+      }
+    });
+    return number;
   }
 
   @override
@@ -109,6 +140,31 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              width: 300,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(360),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(child: SizedBox()),
+                    Text(
+                      'Độ ẩm: $humid%, Nhiệt độ: $temp C',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
