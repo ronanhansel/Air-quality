@@ -67,6 +67,8 @@ void loop()
       Serial.println(Firebase.error());  
       return; 
     }
-  } 
+  } else {
+    Serial.println('No');
+    }
     delay(1000);
 }

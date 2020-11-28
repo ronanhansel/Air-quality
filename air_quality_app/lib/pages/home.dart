@@ -19,8 +19,8 @@ class _HomeState extends State<Home> {
   RiveAnimationController _controller;
   bool absorb = false;
   final FirebaseMessaging _fcm = FirebaseMessaging();
-  var humid;
-  var temp;
+  int humid = 0;
+  double temp = 0.0;
 
   @override
   void initState() {

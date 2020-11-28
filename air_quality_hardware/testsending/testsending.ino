@@ -40,7 +40,8 @@ void setup() {
     delay(1000);
   }
  void sends() {
-   f = String(five)+String(" ")+String(seven)+String(" ")+String(onethreefive)+String(" ")+String(humid)+String(" ")+String(temp)+String(" ");
+   f = String(five)+String(" ")+String(seven)+String(" ")+String(onethreefive)+
+        String(" ")+String(humid)+String(" ")+String(temp)+String(" ");
   Serial.print(f);
   }
  void fivees() {

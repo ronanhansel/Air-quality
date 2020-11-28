@@ -24,10 +24,10 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
   Animation scale;
   AnimationController _scaleController;
   var status;
-  var number;
-  var onethreefive;
-  var five;
-  var seven;
+  var index;
+  var onethreefive = 0;
+  var five = 0;
+  var seven = 0.0;
 
   @override
   void initState() {
@@ -62,6 +62,7 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           seven = number;
+          index = five + seven + onethreefive;
         });
       }
     });
@@ -76,6 +77,7 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           five = number;
+          index = five + seven + onethreefive;
         });
       }
     });
@@ -89,38 +91,14 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           onethreefive = number;
-        });
-      }
-    });
-    return number;
-  }
-  getDataRepeatnumber() async {
-    var number;
-    database.onValue.listen((event) {
-      var snapshot = event.snapshot;
-      number = snapshot.value["135"];
-      if (mounted) {
-        setState(() {
-          onethreefive = number;
+          index = five + seven + onethreefive;
         });
       }
     });
     return number;
   }
 
-  getSum() async {
-    var no;
 
-    number.listen((event) {
-      no = number;
-          if(mounted) {
-            setState(() {
-              number = no;
-              print('changed');
-            });
-          }
-    });
-  }
   initial() async {
     getDataRepeat7();
     getDataRepeat5();
@@ -128,6 +106,7 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
     onethreefive = await getData(135);
 
     status = await quality135();
+
     rootBundle.load('assets/environment.riv').then(
       (data) async {
         var file = RiveFile();
@@ -147,7 +126,7 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     _scaleController.forward();
     _bgController.forward();
-    number = five + seven + onethreefive;
+
     return Wrap(
       children: [
         Align(
@@ -202,7 +181,7 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
-                                          Text(' ${number.toStringAsFixed(2)}',
+                                          Text(' ${index.toStringAsFixed(2)}',
                                               style: TextStyle(
                                                   color: Colors.grey[800],
                                                   fontSize: 40)),
