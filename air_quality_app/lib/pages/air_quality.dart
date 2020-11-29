@@ -62,7 +62,7 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           seven = number;
-          index = five + seven + onethreefive;
+          index = (five + seven + onethreefive) / 3;
         });
       }
     });
@@ -77,12 +77,13 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           five = number;
-          index = five + seven + onethreefive;
+          index = (five + seven + onethreefive) / 3;
         });
       }
     });
     return number;
   }
+
   getDataRepeat135() async {
     var number;
     database.onValue.listen((event) {
@@ -91,13 +92,12 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           onethreefive = number;
-          index = five + seven + onethreefive;
+          index = (five + seven + onethreefive) / 3;
         });
       }
     });
     return number;
   }
-
 
   initial() async {
     getDataRepeat7();
@@ -139,284 +139,318 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                   color: Color(0xffe0e5ec),
                   borderRadius: BorderRadius.all(Radius.circular(0)),
                 ),
-                child: Center(
-                  child: FutureBuilder(
-                    builder:
-                        (BuildContext context, AsyncSnapshot<Widget> widget) {
-                      if (status == null) {
-                        return Container(
-                            height: 40,
-                            width: 40,
-                            child: SpinKitSquareCircle(
-                              color: Colors.grey,
-                            ));
-                      }
-                      _bgController.forward();
-                      _scaleController.forward();
-                      return ScaleTransition(
-                        scale: scale,
-                        child: FadeTransition(
-                          opacity: bgfade,
-                          child: CustomScrollView(
-                            physics: BouncingScrollPhysics(),
-                            slivers: [
-                              SliverList(
-                                  delegate: SliverChildListDelegate([
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: IconButton(
-                                    icon: Icon(Icons.arrow_back_ios),
-                                    onPressed: () => Navigator.pop(context),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Air quality',
-                                          style: TextStyle(
-                                              color: Colors.grey[800],
-                                              fontSize: 40)),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Hero(
+                        tag: 'decor2',
+                        child: Container(
+                          width: 170,
+                          height: 170,
+                          decoration: BoxDecoration(
+                              color: Colors.greenAccent,
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.zero,
+                                  topLeft: Radius.zero,
+                                  bottomRight: Radius.circular(360),
+                                  bottomLeft: Radius.zero)),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Hero(
+                        tag: 'decor1',
+                        child: Container(
+                          width: 150,
+                          height: 150,
+                          decoration: BoxDecoration(
+                              color: Colors.greenAccent,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.zero,
+                                  topRight: Radius.zero,
+                                  bottomRight: Radius.zero,
+                                  bottomLeft: Radius.circular(360))),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: FutureBuilder(
+                        builder:
+                            (BuildContext context, AsyncSnapshot<Widget> widget) {
+                          if (status == null) {
+                            return Container(
+                                height: 40,
+                                width: 40,
+                                child: SpinKitSquareCircle(
+                                  color: Colors.grey,
+                                ));
+                          }
+                          _bgController.forward();
+                          _scaleController.forward();
+                          return ScaleTransition(
+                            scale: scale,
+                            child: FadeTransition(
+                              opacity: bgfade,
+                              child: CustomScrollView(
+                                physics: BouncingScrollPhysics(),
+                                slivers: [
+                                  SliverList(
+                                      delegate: SliverChildListDelegate([
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: IconButton(
+                                        icon: Icon(Icons.arrow_back_ios),
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Text(' ${index.toStringAsFixed(2)}',
+                                          Text('Air quality',
                                               style: TextStyle(
                                                   color: Colors.grey[800],
                                                   fontSize: 40)),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Text(' ${index.toStringAsFixed(2)}',
+                                                  style: TextStyle(
+                                                      color: Colors.grey[800],
+                                                      fontSize: 40)),
+                                            ],
+                                          ),
                                         ],
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Text(
-                                    'Mức độ chất lượng không khí: $status',
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                ),
-                                Container(
-                                  height: 300,
-                                  child: Center(
-                                    child: Center(
-                                      child: Container(
-                                        color: Colors.transparent,
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 20.0),
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height:
-                                            MediaQuery.of(context).size.width,
-                                        child: _riveArtboard == null
-                                            ? const SizedBox()
-                                            : NeuCard(
-                                                color: Colors.grey[300],
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(20)),
-                                                  child: Rive(
-                                                    fit: BoxFit.fitWidth,
-                                                    artboard: _riveArtboard,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text(
+                                        'Mức độ chất lượng không khí: $status',
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Hero(
+                                            tag: 'co2',
+                                            child: Material(
+                                              color: Colors.transparent,
+                                              child: Container(
+                                                height: 100,
+                                                width: 100,
+                                                child: NeuButton(
+                                                  decoration: NeumorphicDecoration(
+                                                      color: Colors.grey[300],
+                                                      borderRadius: BorderRadius.all(
+                                                          Radius.circular(20))),
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        CupertinoPageRoute(
+                                                          builder: (context) => CO2(
+                                                              value: onethreefive),
+                                                        ));
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                    const EdgeInsets.all(5.0),
+                                                    child: Stack(
+                                                      children: [
+                                                        Text(
+                                                          'CO2 level',
+                                                          style:
+                                                          TextStyle(fontSize: 10),
+                                                        ),
+                                                        Center(
+                                                          child: Text(
+                                                            '$onethreefive',
+                                                            style: TextStyle(
+                                                                fontSize: 20),
+                                                          ),
+                                                        ),
+                                                        Align(
+                                                          alignment:
+                                                          Alignment.bottomRight,
+                                                          child: Text(
+                                                            'ppm',
+                                                            style: TextStyle(
+                                                                fontSize: 10),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Hero(
-                                      tag: 'co2',
-                                      child: Material(
-                                        color: Colors.transparent,
-                                        child: Container(
-                                          height: 200,
-                                          width: 170,
-                                          child: NeuButton(
-                                            decoration:
-                                            NeumorphicDecoration(
-                                                color: Colors.grey[300],
-                                                borderRadius:
-                                                BorderRadius.all(
-                                                    Radius.circular(
-                                                        20))),
-                                            onPressed: () {
-                                              Navigator.push(
-                                                  context,
-                                                  CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        CO2(value: onethreefive),
-                                                  ));
-                                            },
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(
-                                                  10.0),
-                                              child: Stack(
-                                                children: [
-                                                  Text(
-                                                    'CO2 level',
-                                                    style: TextStyle(
-                                                        fontSize: 20),
-                                                  ),
-                                                  Center(
-                                                    child: Text(
-                                                      '$onethreefive',
-                                                      style: TextStyle(
-                                                          fontSize: 40),
-                                                    ),
-                                                  ),
-                                                  Align(
-                                                    alignment: Alignment.bottomRight,
-                                                    child: Text(
-                                                      'ppm',
-                                                      style: TextStyle(
-                                                          fontSize: 20),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20,),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Row(
-                                    children: [
-                                      Hero(
-                                        tag: 'co',
-                                        child: Material(
-                                          color: Colors.transparent,
-                                          child: Container(
-                                            height: 200,
-                                            width: 160,
-                                            child: NeuButton(
-                                              decoration:
-                                                  NeumorphicDecoration(
+                                          Expanded(child: SizedBox()),
+                                          Hero(
+                                            tag: 'co',
+                                            child: Material(
+                                              color: Colors.transparent,
+                                              child: Container(
+                                                height: 100,
+                                                width: 100,
+                                                child: NeuButton(
+                                                  decoration: NeumorphicDecoration(
                                                       color: Colors.grey[300],
                                                       borderRadius:
                                                           BorderRadius.all(
-                                                              Radius.circular(
-                                                                  20))),
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    CupertinoPageRoute(
-                                                      builder: (context) =>
-                                                          CO(value: seven),
-                                                    ));
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                    10.0),
-                                                child: Stack(
-                                                  children: [
-                                                    Text(
-                                                      'CO level',
-                                                      style: TextStyle(
-                                                          fontSize: 20),
+                                                              Radius.circular(20))),
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        CupertinoPageRoute(
+                                                          builder: (context) =>
+                                                              CO(value: seven),
+                                                        ));
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(5.0),
+                                                    child: Stack(
+                                                      children: [
+                                                        Text(
+                                                          'CO level',
+                                                          style: TextStyle(
+                                                              fontSize: 10),
+                                                        ),
+                                                        Center(
+                                                          child: Text(
+                                                            '$seven',
+                                                            style: TextStyle(
+                                                                fontSize: 20),
+                                                          ),
+                                                        ),
+                                                        Align(
+                                                          alignment:
+                                                              Alignment.bottomRight,
+                                                          child: Text(
+                                                            'ppm',
+                                                            style: TextStyle(
+                                                                fontSize: 10),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    Center(
-                                                      child: Text(
-                                                        '$seven',
-                                                        style: TextStyle(
-                                                            fontSize: 40),
-                                                      ),
-                                                    ),
-                                                    Align(
-                                                      alignment: Alignment.bottomRight,
-                                                      child: Text(
-                                                        'ppm',
-                                                        style: TextStyle(
-                                                            fontSize: 20),
-                                                      ),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                      Expanded(child: SizedBox()),
-                                      Hero(
-                                        tag: 'natural',
-                                        child: Material(
-                                          color: Colors.transparent,
-                                          child: Container(
-                                            height: 200,
-                                            width: 160,
-                                            child: NeuButton(
-                                              decoration:
-                                                  NeumorphicDecoration(
+                                          Expanded(child: SizedBox()),
+                                          Hero(
+                                            tag: 'natural',
+                                            child: Material(
+                                              color: Colors.transparent,
+                                              child: Container(
+                                                height: 100,
+                                                width: 100,
+                                                child: NeuButton(
+                                                  decoration: NeumorphicDecoration(
                                                       color: Colors.grey[300],
                                                       borderRadius:
                                                           BorderRadius.all(
-                                                              Radius.circular(
-                                                                  20))),
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    CupertinoPageRoute(
-                                                      builder: (context) =>
-                                                          Natural(
-                                                              value: five),
-                                                    ));
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                    10.0),
-                                                child: Stack(
-                                                  children: [
-                                                    Text(
-                                                      'Natural Gas level',
-                                                      style: TextStyle(
-                                                          fontSize: 20),
+                                                              Radius.circular(20))),
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        CupertinoPageRoute(
+                                                          builder: (context) =>
+                                                              Natural(value: five),
+                                                        ));
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(5.0),
+                                                    child: Stack(
+                                                      children: [
+                                                        Text(
+                                                          'Natural Gas level',
+                                                          style: TextStyle(
+                                                              fontSize: 10),
+                                                        ),
+                                                        Center(
+                                                          child: Text(
+                                                            '$five',
+                                                            style: TextStyle(
+                                                                fontSize: 20),
+                                                          ),
+                                                        ),
+                                                        Align(
+                                                          alignment:
+                                                              Alignment.bottomRight,
+                                                          child: Text(
+                                                            'ppm',
+                                                            style: TextStyle(
+                                                                fontSize: 10),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    Center(
-                                                      child: Text(
-                                                        '$five',
-                                                        style: TextStyle(
-                                                            fontSize: 40),
-                                                      ),
-                                                    ),
-                                                    Align(
-                                                      alignment: Alignment.bottomRight,
-                                                      child: Text(
-                                                        'ppm',
-                                                        style: TextStyle(
-                                                            fontSize: 20),
-                                                      ),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Container(
+                                      height: 300,
+                                      child: Center(
+                                        child: Center(
+                                          child: Container(
+                                            color: Colors.transparent,
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: 20.0),
+                                            width:
+                                                MediaQuery.of(context).size.width,
+                                            height:
+                                                MediaQuery.of(context).size.width,
+                                            child: _riveArtboard == null
+                                                ? const SizedBox()
+                                                : NeuCard(
+                                                    color: Colors.grey[300],
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(20)),
+                                                      child: Rive(
+                                                        fit: BoxFit.fitWidth,
+                                                        artboard: _riveArtboard,
+                                                      ),
+                                                    ),
+                                                  ),
+                                          ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ]))
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                                    ),
+                                  ]))
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 )),
           ),
         ),

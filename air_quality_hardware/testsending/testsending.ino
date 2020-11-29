@@ -1,7 +1,7 @@
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
 
-#include<SoftwareSerial.h>
+#include <SoftwareSerial.h>
 
 #include "DHT.h"
 #define DHTTYPE DHT11   // DHT 11
@@ -20,6 +20,11 @@ float ratio;
 float RO;
 float humid;
 float temp;
+float sinVal;
+int toneVal;
+int freq = 700;
+int duration = 1000;
+
 LiquidCrystal_I2C lcd(0x27,20,4);
 
 void setup() {
@@ -29,6 +34,7 @@ void setup() {
   lcd.init();
   lcd.backlight();
   dht.begin();
+  pinMode(8, OUTPUT);
   }
  void loop() {
     R0();
@@ -37,6 +43,15 @@ void setup() {
     onethreefives();
     humid_temp();
     sends();
+    if (five > 500) {
+      tone(8, freq, duration);
+      }
+    if (seven > 500) {
+      tone(8, freq, duration);
+      }
+    if (onethreefive > 500) {
+      tone(8, freq, duration);
+      }
     delay(1000);
   }
  void sends() {

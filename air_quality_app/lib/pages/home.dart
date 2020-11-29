@@ -19,6 +19,7 @@ class _HomeState extends State<Home> {
   RiveAnimationController _controller;
   bool absorb = false;
   final FirebaseMessaging _fcm = FirebaseMessaging();
+
   int humid = 0;
   double temp = 0.0;
 
@@ -38,7 +39,7 @@ class _HomeState extends State<Home> {
           ));
       Scaffold.of(context).showSnackBar(snackbar);
     });
-
+    fcmSubscribe();
     super.initState();
 
     rootBundle.load('assets/bubles.riv').then(
@@ -57,6 +58,10 @@ class _HomeState extends State<Home> {
         }
       },
     );
+  }
+
+  void fcmSubscribe() {
+    _fcm.subscribeToTopic("TopicName");
   }
 
   getDataRepeatHumid() async {
@@ -137,6 +142,40 @@ class _HomeState extends State<Home> {
                     });
                   },
                 ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: Hero(
+              tag: 'decor2',
+              child: Container(
+                width: 170,
+                height: 170,
+                decoration: BoxDecoration(
+                    color: Colors.blueAccent,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.zero,
+                        topLeft: Radius.zero,
+                        bottomRight: Radius.zero,
+                        bottomLeft: Radius.circular(360))),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Hero(
+              tag: 'decor1',
+              child: Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                    color: Colors.blueAccent,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.zero,
+                        topRight: Radius.circular(360),
+                        bottomRight: Radius.zero,
+                        bottomLeft: Radius.zero)),
               ),
             ),
           ),
