@@ -20,8 +20,7 @@ class _HomeState extends State<Home> {
   bool absorb = false;
   final FirebaseMessaging _fcm = FirebaseMessaging();
 
-  int humid = 0;
-  double temp = 0.0;
+
 
   @override
   void initState() {
@@ -44,8 +43,6 @@ class _HomeState extends State<Home> {
 
     rootBundle.load('assets/bubles.riv').then(
       (data) async {
-        await getDataRepeatHumid();
-        await getDataRepeatTemp();
 
         var file = RiveFile();
         var success = file.import(data);
@@ -64,33 +61,7 @@ class _HomeState extends State<Home> {
     _fcm.subscribeToTopic("TopicName");
   }
 
-  getDataRepeatHumid() async {
-    var number;
-    database.onValue.listen((event) {
-      var snapshot = event.snapshot;
-      number = snapshot.value["humid"];
-      if (mounted) {
-        setState(() {
-          humid = number;
-        });
-      }
-    });
-    return number;
-  }
 
-  getDataRepeatTemp() async {
-    var number;
-    database.onValue.listen((event) {
-      var snapshot = event.snapshot;
-      number = snapshot.value["temp"];
-      if (mounted) {
-        setState(() {
-          temp = number;
-        });
-      }
-    });
-    return number;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,31 +150,7 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              width: 300,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(360),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(child: SizedBox()),
-                    Text(
-                      'Độ ẩm: $humid%, Nhiệt độ: $temp C',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          )
+
         ],
       ),
     );

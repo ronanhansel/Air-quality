@@ -28,7 +28,8 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
   var onethreefive = 0;
   var five = 0;
   var seven = 0.0;
-
+  int humid = 0;
+  double temp = 0.0;
   @override
   void initState() {
     initial();
@@ -99,10 +100,39 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
     return number;
   }
 
+  getDataRepeatHumid() async {
+    var number;
+    database.onValue.listen((event) {
+      var snapshot = event.snapshot;
+      number = snapshot.value["humid"];
+      if (mounted) {
+        setState(() {
+          humid = number;
+        });
+      }
+    });
+    return number;
+  }
+
+  getDataRepeatTemp() async {
+    var number;
+    database.onValue.listen((event) {
+      var snapshot = event.snapshot;
+      number = snapshot.value["temp"];
+      if (mounted) {
+        setState(() {
+          temp = number;
+        });
+      }
+    });
+    return number;
+  }
   initial() async {
     getDataRepeat7();
     getDataRepeat5();
     getDataRepeat135();
+    getDataRepeatHumid();
+    getDataRepeatTemp();
     onethreefive = await getData(135);
 
     status = await quality135();
@@ -450,6 +480,31 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                         },
                       ),
                     ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Container(
+                        width: 300,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(360),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Expanded(child: SizedBox()),
+                              Text(
+                                'Độ ẩm: $humid%, Nhiệt độ: $temp C',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 )),
           ),
