@@ -30,6 +30,8 @@ dependencies:
   flutter_spinkit: ^4.1.2+1
   firebase_messaging: ^7.0.3
   vibration: ^1.7.3
+  flutter_animation_progress_bar: ^1.0.6
+
 
 
 

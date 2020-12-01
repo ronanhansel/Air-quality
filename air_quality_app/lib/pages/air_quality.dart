@@ -26,6 +26,10 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
   AnimationController _bgController;
   Animation scale;
   AnimationController _scaleController;
+  AnimationController _scaleaniController;
+  AnimationController _fadeaniController;
+  Animation anifade;
+  Animation aniscale;
   final FirebaseMessaging _fcm = FirebaseMessaging();
   bool touch = true;
   var status = "...";
@@ -39,14 +43,26 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    _scaleaniController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    aniscale = Tween<double>(
+      begin: 0.85,
+      end: 1,
+    ).animate(_scaleaniController);
+    _fadeaniController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    anifade = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(_fadeaniController);
     _bgController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 600));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     bgfade = Tween<double>(
       begin: 0,
       end: 1,
     ).animate(_bgController);
     _scaleController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 600));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     scale = Tween<double>(
       begin: 0.85,
       end: 1,
@@ -171,19 +187,27 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
 
   void changestatus() async {
     if (status != await quality135()) {
+      _scaleaniController.reverse();
+      await _fadeaniController.reverse();
       status = await quality135();
       setState(() {
-
-        play();
+        load();
+        display();
       });
     }
   }
 
-  show () {
+  show () async {
     _bgController.forward();
-    _scaleController.forward();
+    await _scaleController.forward();
+    display();
   }
-  void play () {
+  void display () {
+    _fadeaniController.forward();
+    _scaleaniController.forward();
+    _controller.isActive = !_controller.isActive;
+  }
+  void load () {
     rootBundle.load('assets/environment.riv').then(
           (data) async {
         var file = RiveFile();
@@ -193,6 +217,7 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
           artboard.addController(
             _controller = SimpleAnimation('$status'),
           );
+          _controller.isActive = false;
           setState(() => _riveArtboard = artboard);
         }
       },
@@ -205,7 +230,7 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
     getDataRepeat135();
     getDataRepeatHumid();
     getDataRepeatTemp();
-    play();
+    load();
   }
 
   @override
@@ -280,7 +305,13 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                       alignment: Alignment.centerLeft,
                                       child: IconButton(
                                         icon: Icon(Icons.arrow_back_ios),
-                                        onPressed: () => Navigator.pop(context),
+                                        onPressed: () async {
+                                          _bgController.reverse();
+                                          _scaleController.reverse();
+                                          _fadeaniController.reverse();
+                                          await _scaleaniController.reverse();
+                                          Navigator.pop(context);
+                                        },
                                       ),
                                     ),
                                     Padding(
@@ -323,61 +354,76 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: [
-                                          Hero(
-                                            tag: 'co2',
+                                          Container(
+                                            height: 100,
+                                            width: 100,
                                             child: Material(
                                               color: Colors.transparent,
-                                              child: Container(
-                                                height: 100,
-                                                width: 100,
-                                                child: NeuButton(
-                                                  decoration:
-                                                      NeumorphicDecoration(
-                                                          color:
-                                                              Colors.grey[300],
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          20))),
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        CupertinoPageRoute(
-                                                          builder: (context) => CO2(
-                                                              value:
-                                                                  onethreefive),
-                                                        ));
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            5.0),
-                                                    child: Stack(
-                                                      children: [
-                                                        Text(
-                                                          'CO2 level',
-                                                          style: TextStyle(
-                                                              fontSize: 10),
-                                                        ),
-                                                        Center(
+                                              child: NeuButton(
+                                                decoration:
+                                                    NeumorphicDecoration(
+                                                        color:
+                                                            Colors.grey[300],
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius
+                                                                    .circular(
+                                                                        20))),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      CupertinoPageRoute(
+                                                        builder: (context) => CO2(
+                                                            value:
+                                                                onethreefive),
+                                                      ));
+                                                },
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(
+                                                          5.0),
+                                                  child: Stack(
+                                                    children: [
+                                                      Hero(
+                                                        tag: 'co2text',
+                                                        child: Material(
+                                                          color: Colors.transparent,
                                                           child: Text(
-                                                            '$onethreefive',
-                                                            style: TextStyle(
-                                                                fontSize: 20),
-                                                          ),
-                                                        ),
-                                                        Align(
-                                                          alignment: Alignment
-                                                              .bottomRight,
-                                                          child: Text(
-                                                            'ppm',
+                                                            'CO2 level',
                                                             style: TextStyle(
                                                                 fontSize: 10),
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
+                                                      ),
+                                                      Center(
+                                                        child: Hero(
+                                                          tag: 'co2',
+                                                          child: Material(
+                                                            color: Colors.transparent,
+                                                            child: Text(
+                                                              '$onethreefive',
+                                                              style: TextStyle(
+                                                                  fontSize: 20),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Align(
+                                                        alignment: Alignment
+                                                            .bottomRight,
+                                                        child: Hero(
+                                                          tag: 'ppm1',
+                                                          child: Material(
+                                                            color: Colors.transparent,
+                                                            child: Text(
+                                                              'ppm',
+                                                              style: TextStyle(
+                                                                  fontSize: 10),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                               ),
@@ -526,19 +572,25 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                                 .width,
                                             child: _riveArtboard == null
                                                 ? const SizedBox()
-                                                : NeuCard(
-                                                    color: Colors.grey[300],
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  20)),
-                                                      child: Rive(
-                                                        fit: BoxFit.fitWidth,
-                                                        artboard: _riveArtboard,
+                                                : ScaleTransition(
+                                              scale: aniscale,
+                                                  child: FadeTransition(
+                                                    opacity: anifade,
+                                                    child: NeuCard(
+                                                        color: Colors.grey[300],
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius.circular(
+                                                                      20)),
+                                                          child: Rive(
+                                                            fit: BoxFit.fitWidth,
+                                                            artboard: _riveArtboard,
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
                                                   ),
+                                                ),
                                           ),
                                         ),
                                       ),
