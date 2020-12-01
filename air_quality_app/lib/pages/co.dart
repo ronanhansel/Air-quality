@@ -15,7 +15,7 @@ class CO extends StatefulWidget {
 }
 
 class _COState extends State<CO> {
-  var co;
+  double co;
 
   getDataRepeat7() async {
     var number;
@@ -24,7 +24,7 @@ class _COState extends State<CO> {
       number = snapshot.value["7"];
       if (this.mounted) {
         setState(() {
-          co = number;
+          co = number.toDouble();
         });
       }
     });
@@ -44,19 +44,16 @@ class _COState extends State<CO> {
         children: [
           Align(
             alignment: Alignment.bottomCenter,
-            child: Hero(
-              tag: 'decor2',
-              child: Container(
-                width: 170,
-                height: 120,
-                decoration: BoxDecoration(
-                    color: Colors.purpleAccent,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(360),
-                        topLeft: Radius.circular(360),
-                        bottomRight: Radius.zero,
-                        bottomLeft: Radius.zero)),
-              ),
+            child: Container(
+              width: 170,
+              height: 120,
+              decoration: BoxDecoration(
+                  color: Colors.purpleAccent,
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(360),
+                      topLeft: Radius.circular(360),
+                      bottomRight: Radius.zero,
+                      bottomLeft: Radius.zero)),
             ),
           ),
           Align(
@@ -147,7 +144,7 @@ class _COState extends State<CO> {
               ),
               Center(
                 child: Text(
-                  '${getcoquad(co ?? 0)}',
+                  '${getcoquad(co ?? 0.0)}',
                   style: TextStyle(fontSize: 30),
                 ),
               ),

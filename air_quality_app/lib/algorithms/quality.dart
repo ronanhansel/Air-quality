@@ -5,7 +5,7 @@ Future<String> quality135 () async {
   var index135 = await getData(135);
   var index5 = await getData(5);
   var index7 = await getData(7);
-  var index = index5 + index7 + index135;
+  var index = (index5 + index7 + index135) / 3;
   if (index <= 500) {
     status = 'fresh';
     return status;

@@ -44,19 +44,16 @@ class _CO2State extends State<CO2> {
         children: [
           Align(
             alignment: Alignment.bottomCenter,
-            child: Hero(
-              tag: 'decor2',
-              child: Container(
-                width: 170,
-                height: 120,
-                decoration: BoxDecoration(
-                    color: Colors.cyanAccent,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(360),
-                        topLeft: Radius.circular(360),
-                        bottomRight: Radius.zero,
-                        bottomLeft: Radius.zero)),
-              ),
+            child: Container(
+              width: 170,
+              height: 120,
+              decoration: BoxDecoration(
+                  color: Colors.cyanAccent,
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(360),
+                      topLeft: Radius.circular(360),
+                      bottomRight: Radius.zero,
+                      bottomLeft: Radius.zero)),
             ),
           ),
           Align(
