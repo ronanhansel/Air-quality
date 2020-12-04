@@ -6,19 +6,19 @@ Future<String> quality135 () async {
   var index5 = await getData(5);
   var index7 = await getData(7);
   var index = (index5 + index7 + index135) / 3;
-  if (index <= 500) {
+  if (index <= 270) {
     status = 'fresh';
     return status;
-  } else if (500 < index && index <= 700) {
+  } else if (270 < index && index <= 350) {
     status = 'quite';
     return status;
-  } else if (700 < index && index <= 800) {
+  } else if (360 < index && index <= 440) {
     status = 'not good';
     return status;
-  } else if (800 < index && index <= 900) {
+  } else if (440 < index && index <= 600) {
     status = 'bad';
     return status;
-  } else if (index > 900) {
+  } else if (index > 600) {
     status = 'hazardous';
     return status;
   } else {

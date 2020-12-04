@@ -430,122 +430,149 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                             ),
                                           ),
                                           Expanded(child: SizedBox()),
-                                          Hero(
-                                            tag: 'co',
-                                            child: Material(
-                                              color: Colors.transparent,
-                                              child: Container(
-                                                height: 100,
-                                                width: 100,
-                                                child: NeuButton(
-                                                  decoration:
-                                                      NeumorphicDecoration(
-                                                          color:
-                                                              Colors.grey[300],
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          20))),
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        CupertinoPageRoute(
-                                                          builder: (context) =>
-                                                              CO(value: seven),
-                                                        ));
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            5.0),
-                                                    child: Stack(
-                                                      children: [
-                                                        Text(
+                                          Container(
+                                            height: 100,
+                                            width: 100,
+                                            child: NeuButton(
+                                              decoration:
+                                                  NeumorphicDecoration(
+                                                      color:
+                                                          Colors.grey[300],
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius
+                                                                  .circular(
+                                                                      20))),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    CupertinoPageRoute(
+                                                      builder: (context) =>
+                                                          CO(value: seven),
+                                                    ));
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(
+                                                        5.0),
+                                                child: Stack(
+                                                  children: [
+                                                    Hero(
+                                                      tag: 'cotext',
+                                                      child: Material(
+                                                        color: Colors.transparent,
+                                                        child: Text(
                                                           'CO level',
                                                           style: TextStyle(
                                                               fontSize: 10),
                                                         ),
-                                                        Center(
+                                                      ),
+                                                    ),
+                                                    Center(
+                                                      child: Hero(
+                                                        tag: 'co',
+                                                        child: Material(
+                                                          color: Colors.transparent,
                                                           child: Text(
                                                             '$seven',
                                                             style: TextStyle(
                                                                 fontSize: 20),
                                                           ),
                                                         ),
-                                                        Align(
-                                                          alignment: Alignment
-                                                              .bottomRight,
+                                                      ),
+                                                    ),
+                                                    Align(
+                                                      alignment: Alignment
+                                                          .bottomRight,
+                                                      child: Hero(
+                                                        tag: 'ppm2',
+                                                        child: Material(
+                                                          color: Colors.transparent,
                                                           child: Text(
                                                             'ppm',
                                                             style: TextStyle(
                                                                 fontSize: 10),
                                                           ),
                                                         ),
-                                                      ],
+                                                      ),
                                                     ),
-                                                  ),
+                                                  ],
                                                 ),
                                               ),
                                             ),
                                           ),
                                           Expanded(child: SizedBox()),
-                                          Hero(
-                                            tag: 'natural',
-                                            child: Material(
-                                              color: Colors.transparent,
-                                              child: Container(
-                                                height: 100,
-                                                width: 100,
-                                                child: NeuButton(
-                                                  decoration:
-                                                      NeumorphicDecoration(
-                                                          color:
-                                                              Colors.grey[300],
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          20))),
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        CupertinoPageRoute(
-                                                          builder: (context) =>
-                                                              Natural(
-                                                                  value: five),
-                                                        ));
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            5.0),
-                                                    child: Stack(
-                                                      children: [
-                                                        Text(
-                                                          'Natural Gas level',
-                                                          style: TextStyle(
-                                                              fontSize: 10),
+                                          Container(
+                                            height: 100,
+                                            width: 100,
+                                            child: NeuButton(
+                                              decoration:
+                                                  NeumorphicDecoration(
+                                                      color:
+                                                          Colors.grey[300],
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius
+                                                                  .circular(
+                                                                      20))),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    CupertinoPageRoute(
+                                                      builder: (context) =>
+                                                          Natural(
+                                                              value: five),
+                                                    ));
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(
+                                                        5.0),
+                                                child: Stack(
+                                                  children: [
+                                                    Hero(
+                                                      tag: 'gastext',
+                                                      child: Material(
+                                                        color: Colors.transparent,
+                                                        child: FittedBox(
+                                                          fit: BoxFit.contain,
+                                                          child: Text(
+                                                            'Gas level',
+                                                            style: TextStyle(
+                                                                fontSize: 10),
+                                                          ),
                                                         ),
-                                                        Center(
+                                                      ),
+                                                    ),
+                                                    Hero(
+                                                      tag: 'gas',
+                                                      child: Material(
+                                                        color: Colors.transparent,
+                                                        child: Center(
                                                           child: Text(
                                                             '$five',
                                                             style: TextStyle(
                                                                 fontSize: 20),
                                                           ),
                                                         ),
-                                                        Align(
-                                                          alignment: Alignment
-                                                              .bottomRight,
+                                                      ),
+                                                    ),
+                                                    Align(
+                                                      alignment: Alignment
+                                                          .bottomRight,
+                                                      child: Hero(
+                                                        tag: 'ppm3',
+                                                        child: Material(
+                                                          color: Colors.transparent,
                                                           child: Text(
                                                             'ppm',
                                                             style: TextStyle(
                                                                 fontSize: 10),
                                                           ),
                                                         ),
-                                                      ],
+                                                      ),
                                                     ),
-                                                  ),
+                                                  ],
                                                 ),
                                               ),
                                             ),

@@ -14,8 +14,12 @@ class CO2 extends StatefulWidget {
   _CO2State createState() => _CO2State();
 }
 
-class _CO2State extends State<CO2> {
+class _CO2State extends State<CO2> with SingleTickerProviderStateMixin {
   var co2;
+  int value = 0;
+  Animation animation;
+  AnimationController controller;
+  Color normal = Colors.greenAccent;
 
   getDataRepeat135() async {
     var number;
@@ -23,21 +27,46 @@ class _CO2State extends State<CO2> {
       var snapshot = event.snapshot;
       number = snapshot.value["135"];
       if (this.mounted) {
-        setState(() {
-          co2 = number;
-        });
+        mountFunc(number);
       }
     });
     return number;
   }
 
-  @override
-  void initState() {
-    co2 = widget.value;
-    getDataRepeat135();
-    super.initState();
+  mountFunc(var number) async {
+    setState(() {
+      value = number;
+      if (800 < value) {
+        normal = Colors.redAccent;
+      } else {
+        normal = Colors.greenAccent;
+      }
+      animation = IntTween(begin: co2, end: value)
+          .animate(CurvedAnimation(parent: controller, curve: Curves.easeOut));
+      controller.reset();
+      controller.forward();
+    });
+
+    setState(() {
+      co2 = number;
+    });
   }
 
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+init() async {
+  co2 = widget.value;
+  controller =
+      AnimationController(duration: Duration(milliseconds: 700), vsync: this);
+  animation = IntTween(begin: 0, end: co2)
+      .animate(CurvedAnimation(parent: controller, curve: Curves.easeOut));
+  controller.reset();
+  await controller.forward();
+  getDataRepeat135();
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,8 +74,14 @@ class _CO2State extends State<CO2> {
         physics: BouncingScrollPhysics(),
         children: [
           Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
+            height: MediaQuery
+                .of(context)
+                .size
+                .height,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
             child: Center(
               child: Column(
                 children: [
@@ -75,9 +110,12 @@ class _CO2State extends State<CO2> {
                         width: 150,
                         height: 5,
                         decoration: BoxDecoration(
-                            color: Colors.greenAccent,
-                            borderRadius: BorderRadius.only(topLeft: Radius.circular(360), bottomLeft: Radius.circular(360), topRight: Radius.circular(360), bottomRight: Radius.circular(360))
-                        ),
+                            color: normal,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(360),
+                                bottomLeft: Radius.circular(360),
+                                topRight: Radius.circular(360),
+                                bottomRight: Radius.circular(360))),
                       )
                     ],
                   ),
@@ -89,17 +127,18 @@ class _CO2State extends State<CO2> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(left: 15.0),
-                                child: Hero(
-                                  tag: 'co2',
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Text(
-                                        '$co2',
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: AnimatedBuilder(
+                                    animation: controller,
+                                    builder: (BuildContext context,
+                                        Widget child) {
+                                      return Text(
+                                        '${animation.value}',
                                         style: TextStyle(fontSize: 40),
-                                      ),
-                                    ),
+                                      );
+                                    },
+
                                   ),
                                 ),
                               ),
@@ -122,9 +161,10 @@ class _CO2State extends State<CO2> {
                             width: 150,
                             height: 20,
                             decoration: BoxDecoration(
-                                color: Colors.greenAccent,
-                                borderRadius: BorderRadius.only(topRight: Radius.circular(360), bottomRight: Radius.circular(360))
-                            ),
+                                color: normal,
+                                borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(360),
+                                    bottomRight: Radius.circular(360))),
                           )
                         ],
                       ),
@@ -143,9 +183,9 @@ class _CO2State extends State<CO2> {
                                 maxValue: 1500,
                                 backgroundColor: Colors.grey[200],
                                 currentValue: co2,
-                                changeColorValue: 500,
+                                changeColorValue: 800,
                                 animatedDuration: Duration(milliseconds: 700),
-                                progressColor: Colors.greenAccent,
+                                progressColor: normal,
                                 changeProgressColor: Colors.redAccent,
                                 displayText: '',
                               ),
@@ -183,7 +223,6 @@ class _CO2State extends State<CO2> {
               ),
             ),
           ),
-
         ],
       ),
     );
