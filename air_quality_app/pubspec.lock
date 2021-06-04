@@ -58,7 +58,7 @@ packages:
     source: hosted
     version: "1.2.0"
   firebase_core:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
@@ -118,6 +118,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  flutter_neumorphic:
+    dependency: "direct main"
+    description:
+      name: flutter_neumorphic
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -170,13 +177,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  neumorphic:
-    dependency: "direct main"
-    description:
-      name: neumorphic
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.0"
   path:
     dependency: transitive
     description:

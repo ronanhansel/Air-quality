@@ -3,7 +3,6 @@ import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:neumorphic/neumorphic.dart';
 
 // ignore: must_be_immutable
 class CO extends StatefulWidget {
