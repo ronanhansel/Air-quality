@@ -4,7 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:neumorphic/neumorphic.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:rive/rive.dart' hide LinearGradient;
 import 'package:vibration/vibration.dart';
 
@@ -17,7 +17,7 @@ class _HomeState extends State<Home> {
   Artboard _riveArtboard;
   RiveAnimationController _controller;
   bool absorb = false;
-  final FirebaseMessaging _fcm = FirebaseMessaging();
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   bool touch = true;
 
   @override
@@ -27,46 +27,45 @@ class _HomeState extends State<Home> {
       print(token);
     });
     //firebase messaging
-    _fcm.configure(onMessage: (Map<String, dynamic> message) async {
-      if (touch) {
-        touch = false;
-        showDialog(
-            context: context,
-            builder: (context) =>
-                AlertDialog(
-                  content: ListTile(
-                    title: Text(message['notification']['title']),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: Text(message['notification']['body']),
-                    ),
-                  ),
-                  actions: [
-                    FlatButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          touch = true;
-                        },
-                        child: Text('Ok'))
-                  ],
-                ));
-        if (await Vibration.hasCustomVibrationsSupport()) {
-          Vibration.vibrate(duration: 1000);
-        } else {
-          Vibration.vibrate();
-          await Future.delayed(Duration(milliseconds: 500));
-          Vibration.vibrate();
-        }
-      }
-    });
+    // _fcm.configure(onMessage: (Map<String, dynamic> message) async {
+    //   if (touch) {
+    //     touch = false;
+    //     showDialog(
+    //         context: context,
+    //         builder: (context) =>
+    //             AlertDialog(
+    //               content: ListTile(
+    //                 title: Text(message['notification']['title']),
+    //                 subtitle: Padding(
+    //                   padding: const EdgeInsets.only(top: 10.0),
+    //                   child: Text(message['notification']['body']),
+    //                 ),
+    //               ),
+    //               actions: [
+    //                 FlatButton(
+    //                     onPressed: () {
+    //                       Navigator.of(context).pop();
+    //                       touch = true;
+    //                     },
+    //                     child: Text('Ok'))
+    //               ],
+    //             ));
+    //     if (await Vibration.hasCustomVibrationsSupport()) {
+    //       Vibration.vibrate(duration: 1000);
+    //     } else {
+    //       Vibration.vibrate();
+    //       await Future.delayed(Duration(milliseconds: 500));
+    //       Vibration.vibrate();
+    //     }
+    //   }
+    // });
 
     fcmSubscribe();
 
     rootBundle.load('assets/bubles.riv').then(
           (data) async {
-        var file = RiveFile();
-        var success = file.import(data);
-        if (success) {
+        var file = RiveFile.import(data);
+        if (file != null) {
           var artboard = file.mainArtboard;
           artboard.addController(
             _controller = SimpleAnimation('start'),
@@ -111,17 +110,17 @@ class _HomeState extends State<Home> {
               width: 230,
               child: AbsorbPointer(
                 absorbing: absorb,
-                child: NeuButton(
+                child: NeumorphicButton(
                   child: Center(
                       child: Text(
                         'Air Quality',
                         style: TextStyle(
                             fontSize: 25, fontWeight: FontWeight.bold),
                       )),
-                  decoration: NeumorphicDecoration(
-                      shape: BoxShape.rectangle,
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.all(Radius.circular(40))),
+                  // decoration: NeumorphicDecoration(
+                  //     shape: BoxShape.rectangle,
+                  //     color: Colors.grey[300],
+                  //     borderRadius: BorderRadius.all(Radius.circular(40))),
                   onPressed: () {
                     setState(() {
                       absorb = true;

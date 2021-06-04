@@ -6,8 +6,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:neumorphic/neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart' hide LinearGradient;
 import 'package:vibration/vibration.dart';
@@ -30,7 +30,7 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
   AnimationController _fadeaniController;
   Animation anifade;
   Animation aniscale;
-  final FirebaseMessaging _fcm = FirebaseMessaging();
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   bool touch = true;
   var status = "...";
   var index = 0.0;
@@ -68,36 +68,37 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
       end: 1,
     ).animate(_scaleController);
     //firebase messaging
-    _fcm.configure(onMessage: (Map<String, dynamic> message) async {
-      if (touch) {
-        touch = false;
-        showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                  content: ListTile(
-                    title: Text(message['notification']['title']),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: Text(message['notification']['body']),
-                    ),
-                  ),
-                  actions: [
-                    FlatButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          touch = true;
-                        },
-                        child: Text('Ok'))
-                  ],
-                ));
-        if (await Vibration.hasCustomVibrationsSupport()) {
-          Vibration.vibrate(duration: 1000);
-        } else {
-          Vibration.vibrate();
-          await Future.delayed(Duration(milliseconds: 500));
-          Vibration.vibrate();
-        }
-      }
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+
+      // if (touch) {
+      //   touch = false;
+      //   showDialog(
+      //       context: context,
+      //       builder: (context) => AlertDialog(
+      //             content: ListTile(
+      //               title: Text(message['notification']['title']),
+      //               subtitle: Padding(
+      //                 padding: const EdgeInsets.only(top: 10.0),
+      //                 child: Text(message['notification']['body']),
+      //               ),
+      //             ),
+      //             actions: [
+      //               FlatButton(
+      //                   onPressed: () {
+      //                     Navigator.of(context).pop();
+      //                     touch = true;
+      //                   },
+      //                   child: Text('Ok'))
+      //             ],
+      //           ));
+      //   if (await Vibration.hasCustomVibrationsSupport()) {
+      //     Vibration.vibrate(duration: 1000);
+      //   } else {
+      //     Vibration.vibrate();
+      //     await Future.delayed(Duration(milliseconds: 500));
+      //     Vibration.vibrate();
+      //   }
+      // }
     });
     initial();
   }
@@ -210,9 +211,8 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
   void load () {
     rootBundle.load('assets/environment.riv').then(
           (data) async {
-        var file = RiveFile();
-        var success = file.import(data);
-        if (success) {
+        var file = RiveFile.import(data);
+        if (file != null) {
           var artboard = file.mainArtboard;
           artboard.addController(
             _controller = SimpleAnimation('$status'),
@@ -359,16 +359,16 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                             width: 100,
                                             child: Material(
                                               color: Colors.transparent,
-                                              child: NeuButton(
-                                                decoration:
-                                                    NeumorphicDecoration(
-                                                        color:
-                                                            Colors.grey[300],
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius
-                                                                    .circular(
-                                                                        20))),
+                                              child: NeumorphicButton(
+                                                // decoration:
+                                                //     NeumorphicDecoration(
+                                                //         color:
+                                                //             Colors.grey[300],
+                                                //         borderRadius:
+                                                //             BorderRadius.all(
+                                                //                 Radius
+                                                //                     .circular(
+                                                //                         20))),
                                                 onPressed: () {
                                                   Navigator.push(
                                                       context,
@@ -433,16 +433,17 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                           Container(
                                             height: 100,
                                             width: 100,
-                                            child: NeuButton(
-                                              decoration:
-                                                  NeumorphicDecoration(
-                                                      color:
-                                                          Colors.grey[300],
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius
-                                                                  .circular(
-                                                                      20))),
+                                            child: NeumorphicButton(
+
+                                              // decoration:
+                                              //     NeumorphicDecoration(
+                                              //         color:
+                                              //             Colors.grey[300],
+                                              //         borderRadius:
+                                              //             BorderRadius.all(
+                                              //                 Radius
+                                              //                     .circular(
+                                              //                         20))),
                                               onPressed: () {
                                                 Navigator.push(
                                                     context,
@@ -505,16 +506,16 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                           Container(
                                             height: 100,
                                             width: 100,
-                                            child: NeuButton(
-                                              decoration:
-                                                  NeumorphicDecoration(
-                                                      color:
-                                                          Colors.grey[300],
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius
-                                                                  .circular(
-                                                                      20))),
+                                            child: NeumorphicButton(
+                                              // decoration:
+                                              //     NeumorphicDecoration(
+                                              //         color:
+                                              //             Colors.grey[300],
+                                              //         borderRadius:
+                                              //             BorderRadius.all(
+                                              //                 Radius
+                                              //                     .circular(
+                                              //                         20))),
                                               onPressed: () {
                                                 Navigator.push(
                                                     context,
@@ -603,7 +604,7 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                                               scale: aniscale,
                                                   child: FadeTransition(
                                                     opacity: anifade,
-                                                    child: NeuCard(
+                                                    child: Container(
                                                         color: Colors.grey[300],
                                                         child: ClipRRect(
                                                           borderRadius:
