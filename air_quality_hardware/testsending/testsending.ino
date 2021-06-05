@@ -22,8 +22,9 @@ float humid;
 float temp;
 float sinVal;
 int toneVal;
-int freq = 700;
+int freq = 500;
 int duration = 1000;
+int i = 0;
 
 LiquidCrystal_I2C lcd(0x27,20,4);
 
@@ -35,24 +36,6 @@ void setup() {
   lcd.backlight();
   dht.begin();
   pinMode(8, OUTPUT);
-  }
- void loop() {
-    R0();
-    fivees();
-    sevens();
-    onethreefives();
-    humid_temp();
-    sends();
-    if (five > 500) {
-      tone(8, freq, duration);
-      }
-    if (seven > 500) {
-      tone(8, freq, duration);
-      }
-    if (onethreefive > 500) {
-      tone(8, freq, duration);
-      }
-    delay(1000);
   }
  void sends() {
    f = String(five)+String(" ")+String(seven)+String(" ")+String(onethreefive)+
@@ -107,3 +90,30 @@ float seven_ppm() {
    float ppm = pow(x,-1.709);
    return (ppm);
 }
+ void loop() {
+
+    for (i; i < 251; i++) {
+      lcd.setCursor(0,0);
+      lcd.print("Warming up sensors");
+      lcd.setCursor(16,2);
+      lcd.print(i);
+      delay(1000);
+    }
+    R0();
+    fivees();
+    sevens();
+    onethreefives();
+    humid_temp();
+    sends();
+    if (five > 500) {
+      tone(8, freq, duration);
+      }
+    if (seven > 500) {
+      tone(8, freq, duration);
+      }
+    if (onethreefive > 500) {
+      tone(8, freq, duration);
+      }
+    delay(1000);
+  }
+ 
