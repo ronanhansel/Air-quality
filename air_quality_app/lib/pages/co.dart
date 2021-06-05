@@ -2,7 +2,6 @@ import 'package:air_quality/algorithms/co_quality.dart';
 import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 // ignore: must_be_immutable
 class CO extends StatefulWidget {
@@ -26,7 +25,7 @@ class _COState extends State<CO> {
       if (this.mounted) {
         setState(() {
           co = number.toDouble();
-          if (500 < co) {
+          if (50 < co) {
             normal = Colors.redAccent;
           } else {
             normal = Colors.greenAccent;
@@ -146,10 +145,10 @@ class _COState extends State<CO> {
                               child: FAProgressBar(
                                 direction: Axis.vertical,
                                 verticalDirection: VerticalDirection.up,
-                                maxValue: 1500,
+                                maxValue: 100,
                                 backgroundColor: Colors.grey[200],
                                 currentValue: co.toInt(),
-                                changeColorValue: 501,
+                                changeColorValue: 51,
                                 animatedDuration: Duration(milliseconds: 700),
                                 progressColor: normal,
                                 changeProgressColor: Colors.redAccent,

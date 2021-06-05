@@ -36,6 +36,14 @@ void setup() {
   lcd.backlight();
   dht.begin();
   pinMode(8, OUTPUT);
+  for (i; i < 251; i++) {
+      lcd.setCursor(0,0);
+      lcd.print("Warming up sensors");
+      lcd.setCursor(16,2);
+      lcd.print(i);
+      delay(1000);
+    }
+  lcd.clear();
   }
  void sends() {
    f = String(five)+String(" ")+String(seven)+String(" ")+String(onethreefive)+
@@ -91,14 +99,6 @@ float seven_ppm() {
    return (ppm);
 }
  void loop() {
-
-    for (i; i < 251; i++) {
-      lcd.setCursor(0,0);
-      lcd.print("Warming up sensors");
-      lcd.setCursor(16,2);
-      lcd.print(i);
-      delay(1000);
-    }
     R0();
     fivees();
     sevens();

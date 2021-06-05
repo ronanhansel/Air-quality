@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:air_quality/pages/air_quality.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final databaseRef = FirebaseDatabase.instance.reference(); //database reference object
+
+  void addData(String data) {
+    databaseRef.push().set({'device': data});
+  }
   Artboard _riveArtboard;
   RiveAnimationController _controller;
   bool absorb = false;
@@ -75,7 +81,11 @@ class _HomeState extends State<Home> {
       },
     );
   }
-
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
   void fcmSubscribe() {
     _fcm.subscribeToTopic("TopicName");
   }
@@ -117,10 +127,6 @@ class _HomeState extends State<Home> {
                         style: TextStyle(
                             fontSize: 25, fontWeight: FontWeight.bold),
                       )),
-                  // decoration: NeumorphicDecoration(
-                  //     shape: BoxShape.rectangle,
-                  //     color: Colors.grey[300],
-                  //     borderRadius: BorderRadius.all(Radius.circular(40))),
                   onPressed: () {
                     setState(() {
                       absorb = true;
@@ -173,3 +179,4 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
