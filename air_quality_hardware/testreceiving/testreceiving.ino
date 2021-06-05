@@ -11,7 +11,7 @@
 
 #define WIFI_SSID ":L"
 #define WIFI_PASSWORD "84568456"
-#define FIREBASE_HOST "airify-b9e29.firebaseio.com"
+#define FIREBASE_HOST "airify-b9e29.firebaseio.com/"
 #define FIREBASE_AUTH "myh0iX4HQA1TmZZWdRUr6pfObcWGJRK71TwOixZL"
 float five;
 float seven;
