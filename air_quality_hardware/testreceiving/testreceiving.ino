@@ -14,10 +14,8 @@
 /* 1. Define the WiFi credentials */
 #define WIFI_SSID "Nhà của Cún :L"
 #define WIFI_PASSWORD "84568456"
-<<<<<<< HEAD
 #define FIREBASE_HOST "airify-b9e29.firebaseio.com/"
 #define FIREBASE_AUTH "myh0iX4HQA1TmZZWdRUr6pfObcWGJRK71TwOixZL"
-=======
 
 /* 2. Define the API Key */
 #define API_KEY "AIzaSyDpZUcEEgp86Ad-eZTgDfdFI1G0BSaeOdQ"
@@ -35,7 +33,6 @@ FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;
 
->>>>>>> cd96e5b0825024ea1a9308ed32fac1b2d1df75e2
 float five;
 float seven;
 float onethreefive;
