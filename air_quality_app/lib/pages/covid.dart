@@ -1,51 +1,30 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:air_quality/algorithms/apis.dart';
-import 'package:air_quality/algorithms/co2_quality.dart';
-import 'package:air_quality/algorithms/getvalues.dart';
+import 'package:air_quality/algorithms/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:rive/rive.dart' hide LinearGradient;
 import 'package:skeleton_text/skeleton_text.dart';
-import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 // ignore: must_be_immutable
-class CO2 extends StatefulWidget {
+class COVID extends StatefulWidget {
   var value;
 
-  CO2({Key key, this.value}) : super(key: key);
+  COVID({Key key, this.value}) : super(key: key);
 
   @override
   _CO2State createState() => _CO2State();
 }
 
-class _CO2State extends State<CO2> with SingleTickerProviderStateMixin {
-  int co2 = 0;
+class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
   RiveAnimationController _controller;
   Artboard _riveArtboard;
   double opacity;
-  Color colorShadow = Colors.green;
-  var listTips;
-
-  getDataRepeat135() async {
-    var number;
-    database.onValue.listen((event) {
-      var snapshot = event.snapshot;
-      number = snapshot.value["135"];
-      if (this.mounted) {
-        mountFunc(number);
-      }
-    });
-    return number;
-  }
-
-  mountFunc(var number) async {
-    setState(() {
-      co2 = number ?? 0;
-    });
-    setShadow();
-  }
+  var covidInfo;
+  String city = "Loading";
 
   @override
   void initState() {
@@ -73,26 +52,22 @@ class _CO2State extends State<CO2> with SingleTickerProviderStateMixin {
   }
 
   init() async {
-    listTips = await getTips("co2tips");
-    var html = await ParseHTML.getInfoCOVID();
-    print(listTips);
-    print(listTips.length);
-    co2 = widget.value ?? 0;
-    getDataRepeat135();
+    covidInfo = await ParseHTML.getInfoCOVID();
+    //Prevent null returns, the database is not stable and not made for continuous loop hence sleep function
+    while (covidInfo == null) {
+      covidInfo = await ParseHTML.getInfoCOVID();
+      sleep(Duration(milliseconds: 200));
+    }
+    city = (await Store.readFile())[0];
+    setState(() {
+      covidInfo = covidInfo;
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  setShadow() {
-    if (co2 > 800) {
-      colorShadow = Colors.redAccent;
-    } else {
-      colorShadow = Colors.green;
-    }
   }
 
   @override
@@ -107,10 +82,9 @@ class _CO2State extends State<CO2> with SingleTickerProviderStateMixin {
               pinned: true,
               delegate: CustomHeaderDelegate(
                 expandedHeight: 300,
-                co2: co2,
                 theme: theme,
                 riveArtboard: _riveArtboard,
-                colorShadow: colorShadow,
+                city: city,
               ),
             ),
           ),
@@ -123,41 +97,51 @@ class _CO2State extends State<CO2> with SingleTickerProviderStateMixin {
               ],
             ),
           ),
-
-          if (listTips != null) content(theme, listTips) else SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      Center(
-                        child: Stack(
-                          children: [
-                            Container(
+          if (covidInfo != null)
+            content(theme, covidInfo)
+          else
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  Center(
+                    child: Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          height: 150,
+                          width: 300,
+                          child: SkeletonAnimation(
+                            borderRadius: BorderRadius.circular(25),
+                            child: Container(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(20))
-                              ),
-                              height: 150,
-                              width: 300,
-                              child: SkeletonAnimation(
-                                child: Container(),
+                                borderRadius: BorderRadius.circular(25),
                               ),
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(20))
-                              ),
-                              height: 40,
-                              width: 70,
-                              child: SkeletonAnimation(
-                                shimmerDuration: 800,
-                                child: Container(),
-                              ),
-                            ),
-
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20))),
+                            height: 40,
+                            width: 70,
+                            child: SkeletonAnimation(
+                              borderRadius: BorderRadius.circular(25),
+                              shimmerDuration: 800,
+                              child: Container(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -166,42 +150,64 @@ class _CO2State extends State<CO2> with SingleTickerProviderStateMixin {
 
 class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
   final double expandedHeight;
-  final int co2;
   final Artboard riveArtboard;
   final NeumorphicThemeData theme;
-  final Color colorShadow;
+  final String city;
 
   CustomHeaderDelegate(
       {@required this.expandedHeight,
-      @required this.co2,
       @required this.riveArtboard,
       @required this.theme,
-      @required this.colorShadow});
+      @required this.city});
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    final top = expandedHeight - shrinkOffset - 70;
+    final top = subtract(expandedHeight / 2, shrinkOffset - 70, 35);
     return Stack(
       fit: StackFit.expand,
       clipBehavior: Clip.none,
       children: [
-        buildBackground(shrinkOffset, riveArtboard, theme, co2),
-        buildAppBar(context, co2, shrinkOffset),
+        buildBackground(shrinkOffset, riveArtboard, theme),
+        buildAppBar(context, shrinkOffset),
         Positioned(
-            top: subtract(expandedHeight / 2, shrinkOffset - 70, 50),
-            right: subtract((MediaQuery.of(context).size.width - 200) / 2,
-                shrinkOffset, 15),
-            child: bar(co2, theme, shrinkOffset))
+          top: top,
+          right: subtract(
+              (MediaQuery.of(context).size.width - 250) / 2, shrinkOffset, 15),
+          child: bar(shrinkOffset, city, top),
+        ),
       ],
     );
   }
+
+  Widget bar(double shrinkOffset, String city, double top) => Container(
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              height: subtract(150, shrinkOffset * 1.25, 80),
+              width: subtract(250, shrinkOffset, 140),
+              decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.all(Radius.circular(15))),
+            ),
+            Positioned(
+              top: add(3.0, shrinkOffset / 4, top / 2),
+              right: 70,
+              child: Text(
+                '$city',
+                style: TextStyle(fontSize: subtract(27, shrinkOffset / 7, 15)),
+              ),
+            ),
+          ],
+        ),
+      );
 
   double appear(shrinkOffset) => shrinkOffset / expandedHeight;
 
   double disappear(shrinkOffset) => 1 - shrinkOffset / expandedHeight;
 
-  Widget buildAppBar(BuildContext context, int co2, double shrinkOffset) {
+  Widget buildAppBar(BuildContext context, double shrinkOffset) {
     return Opacity(
       opacity: appear(shrinkOffset),
       child: ClipRRect(
@@ -210,8 +216,8 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
           child: Container(
             height: kToolbarHeight,
             child: AppBar(
-              backgroundColor: colorShadow.withOpacity(0.2),
-              title: Text("$co2"),
+              backgroundColor: Colors.blue.withOpacity(0.2),
+              title: Text("Dang on :L"),
             ),
           ),
         ),
@@ -219,15 +225,14 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
     );
   }
 
-  Widget buildBackground(double shrinkOffset, Artboard _riveArtboard,
-      NeumorphicThemeData theme, int co2) {
+  Widget buildBackground(
+      double shrinkOffset, Artboard _riveArtboard, NeumorphicThemeData theme) {
     return Opacity(
         opacity: disappear(shrinkOffset),
-        child: artBoard(_riveArtboard, theme, co2, colorShadow));
+        child: artBoard(_riveArtboard, theme));
   }
 
-  Widget artBoard(Artboard _riveArtboard, NeumorphicThemeData theme, int co2,
-      Color colorShadow) {
+  Widget artBoard(Artboard _riveArtboard, NeumorphicThemeData theme) {
     return _riveArtboard == null
         ? const SizedBox(
             height: 300,
@@ -248,7 +253,7 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
                   gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.center,
-                    colors: [colorShadow, Colors.transparent],
+                    colors: [Colors.blue, Colors.transparent],
                   ),
                 ),
               ),
@@ -263,47 +268,13 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
     }
     return a;
   }
-
-  Widget bar(int co2, NeumorphicThemeData theme, double shrinkOffset) =>
-      SleekCircularSlider(
-        appearance: CircularSliderAppearance(
-            animDurationMultiplier: 2.5,
-            size: subtract(200, shrinkOffset, 60),
-            customWidths: CustomSliderWidths(progressBarWidth: 10),
-            customColors: CustomSliderColors(
-                progressBarColors: [
-                  Colors.red,
-                  Colors.redAccent,
-                  Colors.yellowAccent,
-                  Colors.green,
-                  Colors.greenAccent,
-                ],
-                shadowColor: co2 <= 800 ? Colors.green[300] : Colors.red[300],
-                shadowStep: 10,
-                shadowMaxOpacity: 2,
-                trackColor: Colors.transparent,
-                dotColor: Colors.transparent)),
-        min: 0,
-        max: 1500,
-        initialValue: co2.toDouble(),
-        innerWidget: (double wvalue) {
-          return Center(
-            child: Container(
-              height: subtract(130, shrinkOffset, 65),
-              decoration: BoxDecoration(
-                  color: theme.variantColor, shape: BoxShape.circle),
-              child: Center(
-                child: Text(
-                  '${wvalue.toInt()}',
-                  style: TextStyle(
-                      fontSize: subtract(40, shrinkOffset / 3, 20),
-                      color: theme.defaultTextColor),
-                ),
-              ),
-            ),
-          );
-        },
-      );
+  double add(double i, double shrinkOffset, double lim) {
+    double a = i + shrinkOffset;
+    if (a > lim) {
+      a = lim;
+    }
+    return a;
+  }
 
   @override
   double get maxExtent => expandedHeight;
@@ -316,7 +287,7 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
       true;
 }
 
-Widget content(NeumorphicThemeData theme, var listTips) => SliverList(
+Widget content(NeumorphicThemeData theme, var listContent) => SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           return Padding(
@@ -346,6 +317,6 @@ Widget content(NeumorphicThemeData theme, var listTips) => SliverList(
             ),
           );
         },
-        childCount: listTips.length,
+        childCount: listContent.length,
       ),
     );

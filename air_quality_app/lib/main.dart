@@ -1,11 +1,16 @@
+import 'package:air_quality/pages/air_quality.dart';
+import 'package:air_quality/pages/co2.dart';
+import 'package:air_quality/pages/covid.dart';
 import 'package:air_quality/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
   runApp(MyApp());
 }
 
@@ -23,20 +28,39 @@ class MyApp extends StatelessWidget {
           return Text("Something went wrong");
         }
 
-        // Once complete, show your application
+        // Once complete, show application
         if (snapshot.connectionState == ConnectionState.done) {
-          return MaterialApp(
+          return NeumorphicApp(
+            debugShowCheckedModeBanner: false,
             title: 'Airify',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
+            themeMode: ThemeMode.dark,
+            //or dark / system
+            darkTheme: NeumorphicThemeData(
+              baseColor: Color(0xff333333),
+              defaultTextColor: Colors.white,
+              accentColor: Colors.green,
+              variantColor: Color(0xff636363),
+              lightSource: LightSource.topLeft,
+              depth: 4,
+              intensity: 0.3,
+            ),
+            theme: NeumorphicThemeData(
+              baseColor: Color(0xffDDDDDD),
+              accentColor: Colors.cyan,
+              lightSource: LightSource.topLeft,
+              depth: 6,
+              intensity: 0.5,
             ),
             home: Home(),
           );
         }
 
         // Otherwise, show something whilst waiting for initialization to complete
-        return SpinKitSquareCircle(
-          color: Colors.grey,
+        return Container(
+          color: Colors.white,
+          child: SpinKitSquareCircle(
+            color: Colors.grey,
+          ),
         );
       },
     );

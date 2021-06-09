@@ -12,3 +12,10 @@ getData(var sensor) async {
   return number;
 }
 
+getTips(String tips) async {
+  var listTips;
+  await database.once().then((DataSnapshot snapshot) {
+    listTips = Map<String, dynamic>.from(snapshot.value[tips]);
+  });
+  return listTips;
+}
