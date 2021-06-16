@@ -41,7 +41,7 @@ class _COState extends State<CO> with SingleTickerProviderStateMixin {
 
   mountFunc(var number) async {
     setState(() {
-      co = number ?? 0;
+      co = number.toDouble() ?? 0.0;
     });
     setShadow();
   }
@@ -87,7 +87,7 @@ class _COState extends State<CO> with SingleTickerProviderStateMixin {
   }
 
   setShadow() {
-    if (co > 50) {
+    if (co > 35) {
       colorShadow = Colors.redAccent;
     } else {
       colorShadow = Colors.green;
@@ -221,6 +221,7 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   Widget buildBackground(double shrinkOffset, Artboard _riveArtboard,
       NeumorphicThemeData theme, double co) {
+    print(co);
     return Opacity(
         opacity: disappear(shrinkOffset),
         child: artBoard(_riveArtboard, theme, co, colorShadow));
@@ -278,14 +279,14 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
                   Colors.green,
                   Colors.greenAccent,
                 ],
-                shadowColor: co <= 50 ? Colors.green[300] : Colors.red[300],
+                shadowColor: co <= 35 ? Colors.green[300] : Colors.red[300],
                 shadowStep: 10,
                 shadowMaxOpacity: 2,
                 trackColor: Colors.transparent,
                 dotColor: Colors.transparent)),
         min: 0,
-        max: 1500,
-        initialValue: co.toDouble(),
+        max: 50,
+        initialValue: co,
         innerWidget: (double wvalue) {
           return Center(
             child: Container(
@@ -294,7 +295,7 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
                   color: theme.variantColor, shape: BoxShape.circle),
               child: Center(
                 child: Text(
-                  '$wvalue',
+                  '${wvalue.toStringAsFixed(2)}',
                   style: TextStyle(
                       fontSize: subtract(40, shrinkOffset / 3, 20),
                       color: theme.defaultTextColor),
