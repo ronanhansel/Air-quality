@@ -36,7 +36,7 @@ void setup() {
   lcd.backlight();
   dht.begin();
   pinMode(8, OUTPUT);
-  for (i; i < 251; i++) {
+  for (i; i < 151; i++) {
       lcd.setCursor(0,0);
       lcd.print("Warming up sensors");
       lcd.setCursor(16,2);
@@ -108,7 +108,7 @@ float seven_ppm() {
     if (five > 500) {
       tone(8, freq, duration);
       }
-    if (seven > 500) {
+    if (seven > 35) {
       tone(8, freq, duration);
       }
     if (onethreefive > 500) {
