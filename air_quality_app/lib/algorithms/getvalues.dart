@@ -19,3 +19,11 @@ getTips(String tips) async {
   });
   return listTips;
 }
+
+getImages() async {
+  var listImages;
+  await database.once().then((DataSnapshot snapshot) {
+    listImages = Map<String, dynamic>.from(snapshot.value['images']);
+  });
+  return listImages;
+}

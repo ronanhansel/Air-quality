@@ -1,9 +1,13 @@
-import 'package:air_quality/algorithms/co2_quality.dart';
-import 'package:air_quality/algorithms/gas_quality.dart';
+import 'dart:ui';
+
+import 'package:air_quality/algorithms/apis.dart';
 import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:rive/rive.dart' hide LinearGradient;
+import 'package:skeleton_text/skeleton_text.dart';
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 // ignore: must_be_immutable
 class Natural extends StatefulWidget {
@@ -16,11 +20,12 @@ class Natural extends StatefulWidget {
 }
 
 class _NaturalState extends State<Natural> with SingleTickerProviderStateMixin {
-  var gas;
-  int value = 0;
-  Animation animation;
-  AnimationController controller;
-  Color normal = Colors.greenAccent;
+  int gas = 0;
+  RiveAnimationController _controller;
+  Artboard _riveArtboard;
+  double opacity;
+  Color colorShadow = Colors.green;
+  var listTips;
 
   getDataRepeat5() async {
     var number;
@@ -36,196 +41,328 @@ class _NaturalState extends State<Natural> with SingleTickerProviderStateMixin {
 
   mountFunc(var number) async {
     setState(() {
-      value = number;
-      if (500 < value) {
-        normal = Colors.redAccent;
-      } else {
-        normal = Colors.greenAccent;
-      }
-      animation = IntTween(begin: gas, end: value)
-          .animate(CurvedAnimation(parent: controller, curve: Curves.easeOut));
-      controller.reset();
-      controller.forward();
+      gas = number ?? 0;
     });
-
-    setState(() {
-      gas = number;
-    });
+    setShadow();
   }
 
   @override
   void initState() {
     init();
+    load();
     super.initState();
   }
-init() async{
-  gas = widget.value;
-  value = gas;
-  controller =
-      AnimationController(duration: Duration(milliseconds: 700), vsync: this);
-  animation = IntTween(begin: 0, end: gas)
-      .animate(CurvedAnimation(parent: controller, curve: Curves.easeOut));
-  await controller.forward();
-  getDataRepeat5();
-}
+
+  void animation() {}
+
+  void load() {
+    rootBundle.load('assets/idyllic.riv').then(
+      (data) async {
+        var file = RiveFile.import(data);
+        if (file != null) {
+          var artboard = file.mainArtboard;
+          artboard.addController(
+            _controller = SimpleAnimation('start'),
+          );
+          _controller.isActive = true;
+          setState(() => _riveArtboard = artboard);
+        }
+      },
+    );
+  }
+
+  init() async {
+    listTips = await getTips("gastips");
+    var html = await ParseHTML.getInfoCOVID();
+    print(listTips);
+    print(listTips.length);
+    gas = widget.value ?? 0;
+    getDataRepeat5();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  setShadow() {
+    if (gas > 500) {
+      colorShadow = Colors.redAccent;
+    } else {
+      colorShadow = Colors.green;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = NeumorphicTheme.currentTheme(context);
     return Scaffold(
-      body: ListView(
+      body: CustomScrollView(
         physics: BouncingScrollPhysics(),
-        children: [
+        slivers: [
           Container(
-            height: MediaQuery
-                .of(context)
-                .size
-                .height,
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
-            child: Center(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.arrow_back_ios),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Column(
-                    children: [
-                      Center(
-                        child: Text(
-                          '${getgasquad(gas ?? 0)}',
-                          style: TextStyle(fontSize: 30),
-                        ),
-                      ),
-                      Container(
-                        width: 150,
-                        height: 5,
-                        decoration: BoxDecoration(
-                            color: normal,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(360),
-                                bottomLeft: Radius.circular(360),
-                                topRight: Radius.circular(360),
-                                bottomRight: Radius.circular(360))),
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15.0),
-                                child: FittedBox(
-                                  fit: BoxFit.contain,
-                                  child: AnimatedBuilder(
-                                    animation: controller,
-                                    builder: (BuildContext context,
-                                        Widget child) {
-                                      return Text(
-                                        '${animation.value}',
-                                        style: TextStyle(fontSize: 40),
-                                      );
-                                    },
-
-                                  ),
-                                ),
-                              ),
-                              Hero(
-                                tag: 'ppm3',
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: Text(
-                                      'ppm',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            width: 150,
-                            height: 20,
-                            decoration: BoxDecoration(
-                                color: normal,
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(360),
-                                    bottomRight: Radius.circular(360))),
-                          )
-                        ],
-                      ),
-                      Expanded(child: SizedBox()),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 25.0),
-                        child: Material(
-                          child: FittedBox(
-                            fit: BoxFit.contain,
-                            child: Container(
-                              width: 40,
-                              height: 300,
-                              child: FAProgressBar(
-                                direction: Axis.vertical,
-                                verticalDirection: VerticalDirection.up,
-                                maxValue: 1500,
-                                backgroundColor: Colors.grey[200],
-                                currentValue: gas,
-                                changeColorValue: 501,
-                                animatedDuration: Duration(milliseconds: 700),
-                                progressColor: normal,
-                                changeProgressColor: Colors.redAccent,
-                                displayText: '',
-                              ),
-                            ),
+            child: SliverPersistentHeader(
+              pinned: true,
+              delegate: CustomHeaderDelegate(
+                expandedHeight: 300,
+                gas: gas,
+                theme: theme,
+                riveArtboard: _riveArtboard,
+                colorShadow: colorShadow,
+              ),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                SizedBox(
+                  height: 150,
+                ),
+              ],
+            ),
+          ),
+          if (listTips != null)
+            content(theme, listTips)
+          else
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  Center(
+                    child: Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          height: 150,
+                          width: 300,
+                          child: SkeletonAnimation(
+                            child: Container(),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10.0),
-                        child: Hero(
-                          tag: 'gastext',
-                          child: Material(
-                            color: Colors.transparent,
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: Text(
-                                'Gas level',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ),
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          height: 40,
+                          width: 70,
+                          child: SkeletonAnimation(
+                            shimmerDuration: 500,
+                            child: Container(),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
         ],
       ),
     );
   }
 }
+
+class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final double expandedHeight;
+  final int gas;
+  final Artboard riveArtboard;
+  final NeumorphicThemeData theme;
+  final Color colorShadow;
+
+  CustomHeaderDelegate(
+      {@required this.expandedHeight,
+      @required this.gas,
+      @required this.riveArtboard,
+      @required this.theme,
+      @required this.colorShadow});
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final top = expandedHeight - shrinkOffset - 70;
+    return Stack(
+      fit: StackFit.expand,
+      clipBehavior: Clip.none,
+      children: [
+        buildBackground(shrinkOffset, riveArtboard, theme, gas),
+        buildAppBar(context, gas, shrinkOffset),
+        Positioned(
+            top: subtract(expandedHeight / 2, shrinkOffset - 70, 50),
+            right: subtract((MediaQuery.of(context).size.width - 200) / 2,
+                shrinkOffset, 15),
+            child: bar(gas, theme, shrinkOffset))
+      ],
+    );
+  }
+
+  double appear(shrinkOffset) => shrinkOffset / expandedHeight;
+
+  double disappear(shrinkOffset) => 1 - shrinkOffset / expandedHeight;
+
+  Widget buildAppBar(BuildContext context, int gas, double shrinkOffset) {
+    return Opacity(
+      opacity: appear(shrinkOffset),
+      child: ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            height: kToolbarHeight,
+            child: AppBar(
+              backgroundColor: colorShadow.withOpacity(0.2),
+              title: Text("Gas"),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildBackground(double shrinkOffset, Artboard _riveArtboard,
+      NeumorphicThemeData theme, int gas) {
+    return Opacity(
+        opacity: disappear(shrinkOffset),
+        child: artBoard(_riveArtboard, theme, gas, colorShadow));
+  }
+
+  Widget artBoard(Artboard _riveArtboard, NeumorphicThemeData theme, int gas,
+      Color colorShadow) {
+    return _riveArtboard == null
+        ? const SizedBox(
+            height: 300,
+            width: 300,
+          )
+        : Stack(
+            children: [
+              Container(
+                child: Rive(
+                  fit: BoxFit.cover,
+                  artboard: _riveArtboard,
+                ),
+              ),
+              AnimatedContainer(
+                duration: Duration(milliseconds: 1500),
+                curve: Curves.easeInOutSine,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.center,
+                    colors: [colorShadow, Colors.transparent],
+                  ),
+                ),
+              ),
+            ],
+          );
+  }
+
+  double subtract(double i, double shrinkOffset, double lim) {
+    double a = i - shrinkOffset;
+    if (a < lim) {
+      a = lim;
+    }
+    return a;
+  }
+
+  Widget bar(int gas, NeumorphicThemeData theme, double shrinkOffset) =>
+      SleekCircularSlider(
+        appearance: CircularSliderAppearance(
+            animDurationMultiplier: 2.5,
+            size: subtract(200, shrinkOffset, 60),
+            customWidths: CustomSliderWidths(progressBarWidth: 10),
+            customColors: CustomSliderColors(
+                progressBarColors: [
+                  Colors.red,
+                  Colors.redAccent,
+                  Colors.yellowAccent,
+                  Colors.green,
+                  Colors.greenAccent,
+                ],
+                shadowColor: gas <= 500 ? Colors.green[300] : Colors.red[300],
+                shadowStep: 10,
+                shadowMaxOpacity: 2,
+                trackColor: Colors.transparent,
+                dotColor: Colors.transparent)),
+        min: 0,
+        max: 1500,
+        initialValue: gas.toDouble(),
+        innerWidget: (double wvalue) {
+          return Center(
+            child: Container(
+              height: subtract(130, shrinkOffset, 65),
+              decoration: BoxDecoration(
+                  color: theme.variantColor, shape: BoxShape.circle),
+              child: Center(
+                child: Text(
+                  '${wvalue.toInt()}',
+                  style: TextStyle(
+                      fontSize: subtract(40, shrinkOffset / 3, 20),
+                      color: theme.defaultTextColor),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+
+  @override
+  double get maxExtent => expandedHeight;
+
+  @override
+  double get minExtent => kToolbarHeight;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      true;
+}
+
+Widget content(NeumorphicThemeData theme, var listTips) => SliverList(
+  delegate: SliverChildBuilderDelegate(
+        (context, index) {
+      String key = listTips.keys.elementAt(index);
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 15.0),
+        child: Center(
+          child: Container(
+            height: 150,
+            width: 300,
+            child: NeumorphicButton(
+              style: NeumorphicStyle(
+                color: theme.variantColor,
+              ),
+              onPressed: () {},
+              child: DefaultTextStyle(
+                style:
+                TextStyle(color: theme.defaultTextColor, fontSize: 15),
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.lightbulb_outline_rounded,
+                            color: theme.defaultTextColor,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "$key",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(top: 30, child: Text("${listTips[key]}")),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+    childCount: listTips.length,
+  ),
+);

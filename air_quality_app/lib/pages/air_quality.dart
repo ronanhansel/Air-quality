@@ -477,16 +477,6 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                       children: [
                         Center(
                           child: NeumorphicButton(
-                            onPressed: () {
-                              Timer(
-                                  Duration(milliseconds: 300),
-                                      () => Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                        builder: (context) =>
-                                            COVID(),
-                                      )));
-                            },
                             style: NeumorphicStyle(
                               color: theme.variantColor,
                             ),
@@ -537,7 +527,7 @@ Widget SkeletonLoading(BuildContext context, NeumorphicThemeData theme) {
         alignment: Alignment.centerLeft,
         child: IconButton(
           color: theme.defaultTextColor,
-          icon: Icon(Icons.arrow_back_ios),
+          icon: Icon(Icons.arrow_back),
           onPressed: () async {
             Navigator.pop(context);
           },

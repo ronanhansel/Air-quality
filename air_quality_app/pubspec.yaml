@@ -48,6 +48,10 @@ dependencies:
   html: ^0.15.0
   geocoder: ^0.2.1
   path_provider: ^2.0.2
+  flutter_echarts: ^2.1.0
+  intl: ^0.17.0
+  animate_icons: ^2.0.0
+  url_launcher: ^6.0.6
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +74,7 @@ flutter:
    - assets/environment.riv
    - assets/housepole.riv
    - assets/mountain_view.riv
+   - assets/idyllic.riv
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

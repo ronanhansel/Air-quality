@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:air_quality/algorithms/apis.dart';
-import 'package:air_quality/algorithms/co2_quality.dart';
 import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +8,8 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:rive/rive.dart' hide LinearGradient;
 import 'package:skeleton_text/skeleton_text.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 // ignore: must_be_immutable
 class CO2 extends StatefulWidget {
@@ -123,41 +124,42 @@ class _CO2State extends State<CO2> with SingleTickerProviderStateMixin {
               ],
             ),
           ),
-
-          if (listTips != null) content(theme, listTips) else SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      Center(
-                        child: Stack(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(20))
-                              ),
-                              height: 150,
-                              width: 300,
-                              child: SkeletonAnimation(
-                                child: Container(),
-                              ),
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(20))
-                              ),
-                              height: 40,
-                              width: 70,
-                              child: SkeletonAnimation(
-                                shimmerDuration: 800,
-                                child: Container(),
-                              ),
-                            ),
-
-                          ],
+          if (listTips != null)
+            content(theme, listTips)
+          else
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  Center(
+                    child: Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          height: 150,
+                          width: 300,
+                          child: SkeletonAnimation(
+                            child: Container(),
+                          ),
                         ),
-                      ),
-                    ],
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          height: 40,
+                          width: 70,
+                          child: SkeletonAnimation(
+                            shimmerDuration: 800,
+                            child: Container(),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -200,7 +202,6 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
   double appear(shrinkOffset) => shrinkOffset / expandedHeight;
 
   double disappear(shrinkOffset) => 1 - shrinkOffset / expandedHeight;
-
   Widget buildAppBar(BuildContext context, int co2, double shrinkOffset) {
     return Opacity(
       opacity: appear(shrinkOffset),
@@ -211,7 +212,7 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
             height: kToolbarHeight,
             child: AppBar(
               backgroundColor: colorShadow.withOpacity(0.2),
-              title: Text("$co2"),
+              title: Text("CO2"),
             ),
           ),
         ),
@@ -315,10 +316,10 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
       true;
 }
-
 Widget content(NeumorphicThemeData theme, var listTips) => SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
+          String key = listTips.keys.elementAt(index);
           return Padding(
             padding: const EdgeInsets.only(bottom: 15.0),
             child: Center(
@@ -330,16 +331,32 @@ Widget content(NeumorphicThemeData theme, var listTips) => SliverList(
                     color: theme.variantColor,
                   ),
                   onPressed: () {},
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Icon(
-                          Icons.lightbulb_outline_rounded,
-                          color: theme.defaultTextColor,
+                  child: DefaultTextStyle(
+                    style:
+                        TextStyle(color: theme.defaultTextColor, fontSize: 15),
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.lightbulb_outline_rounded,
+                                color: theme.defaultTextColor,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "$key",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
                         ),
-                      )
-                    ],
+                        Positioned(top: 30, child: Text("${listTips[key]}")),
+                      ],
+                    ),
                   ),
                 ),
               ),

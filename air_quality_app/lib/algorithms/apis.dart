@@ -61,3 +61,30 @@ class ParseHTML {
     return content;
   }
 }
+
+class CSSEGICovidData {
+  static Future<List> getRawDeathsData () async {
+    final response = (await http.get(Uri.parse('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv'))).body;
+    String vnData = response.substring(response.indexOf("Vietnam"), response.indexOf(",West "));
+    // vnData= vnData.substring(vnData.indexOf(",", vnData.length ~/ 2), vnData.length);
+    List data = vnData.split(",");
+    return data;
+  }
+  static Future<List> getRawConfirmedData () async {
+    final response = (await http.get(Uri.parse('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv'))).body;
+    String vnData = response.substring(response.indexOf("Vietnam"), response.indexOf(",West "));
+    // vnData = vnData.substring(vnData.indexOf(",", vnData.length ~/ 2), vnData.length);
+    List data = vnData.split(",");
+    return data;
+  }
+  static Future<List> getRawRecoveredData () async {
+    final response = (await http.get(Uri.parse('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv'))).body;
+    String vnData = response.substring(response.indexOf("Vietnam"), response.indexOf(",West "));
+    // vnData = vnData.substring(vnData.indexOf(",", vnData.length ~/ 2), vnData.length);
+    List data = vnData.split(",");
+    return data;
+  }
+  static Future<List> getRawDailyData () {
+
+  }
+}
