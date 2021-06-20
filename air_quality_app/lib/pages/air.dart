@@ -97,34 +97,34 @@ class _AirState extends State<Air> {
               onPressed: () {},
               child: Center(
                 child: DefaultTextStyle(
-                  style: TextStyle(color: theme.defaultTextColor, fontSize: 20),
+                  style: TextStyle(color: theme.defaultTextColor, fontSize: 17),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Wrap(
                       children: [
                         Row(
                           children: [
-                            Expanded(child: Text("CO: ${mapContent["co"] ?? "..." }")),
-                            Text("NO: ${mapContent["no"] ?? "..." }"),
+                            Expanded(child: Text("CO: ${mapContent["co"] ?? "..." }\u00b5g/m\u00b3")),
+                            Text("NO: ${mapContent["no"] ?? "..." }\u00b5g/m\u00b3"),
                           ],
                         ),
                         Row(
                           children: [
-                            Expanded(child: Text("NO2: ${mapContent["no2"] ?? "..." }")),
-                            Text("O3: ${mapContent["o3"] ?? "..." }"),
+                            Expanded(child: Text("NO2: ${mapContent["no2"] ?? "..." }\u00b5g/m\u00b3")),
+                            Text("O3: ${mapContent["o3"] ?? "..." }\u00b5g/m\u00b3"),
                           ],
                         ),
                         Row(
                           children: [
-                            Expanded(child: Text("SO2: ${mapContent["so2"] ?? "..." }")),
-                            Text("NH3: ${mapContent["nh3"] ?? "..." }"),
+                            Expanded(child: Text("SO2: ${mapContent["so2"] ?? "..." }\u00b5g/m\u00b3")),
+                            Text("NH3: ${mapContent["nh3"] ?? "..." }\u00b5g/m\u00b3"),
                           ],
                         ),
                         Row(
                           children: [
                             Expanded(
-                                child: Text("PM10: ${mapContent["pm10"] ?? "..." }")),
-                            Text("PM2.5: ${mapContent["pm2_5"] ?? "..." }"),
+                                child: Text("PM10: ${mapContent["pm10"] ?? "..." }\u00b5g/m\u00b3")),
+                            Text("PM2.5: ${mapContent["pm2_5"] ?? "..." }\u00b5g/m\u00b3"),
                           ],
                         ),
                       ],

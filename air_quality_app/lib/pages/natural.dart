@@ -334,27 +334,27 @@ Widget content(NeumorphicThemeData theme, var listTips) => SliverList(
               child: DefaultTextStyle(
                 style:
                 TextStyle(color: theme.defaultTextColor, fontSize: 15),
-                child: Stack(
+                child: Wrap(
                   children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.lightbulb_outline_rounded,
-                            color: theme.defaultTextColor,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "$key",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.lightbulb_outline_rounded,
+                          color: theme.defaultTextColor,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "$key",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
-                    Positioned(top: 30, child: Text("${listTips[key]}")),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text("${listTips[key]}"),
+                    ),
                   ],
                 ),
               ),
