@@ -15,6 +15,7 @@ class _GraphState extends State<Graph> {
   var _deaths;
   var _confirmed;
   var _recovered;
+  var _vaccine;
   var today = DateTime.now();
   DateFormat dateFormat = DateFormat("dd-MM-yy");
 
@@ -25,12 +26,13 @@ class _GraphState extends State<Graph> {
   }
 
   futureExec() async {
-    _deaths = await CSSEGICovidData.getRawDeathsData();
+    _deaths = await CovidData.getRawDeathsData();
     _deaths.removeRange(0, 3);
-    _confirmed = await CSSEGICovidData.getRawConfirmedData();
+    _confirmed = await CovidData.getRawConfirmedData();
     _confirmed.removeRange(0, 3);
-    _recovered = await CSSEGICovidData.getRawRecoveredData();
+    _recovered = await CovidData.getRawRecoveredData();
     _recovered.removeRange(0, 3);
+    _vaccine = await CovidData.getJSONVaccinationData();
     _xAxis = List.generate(_deaths.length, (i) => (i + 1));
     _xAxis.forEach((value) {
       var getDate = today.subtract(Duration(days: value));

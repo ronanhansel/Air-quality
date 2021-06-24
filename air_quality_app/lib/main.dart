@@ -1,7 +1,7 @@
 import 'package:air_quality/pages/air_quality.dart';
 import 'package:air_quality/pages/co2.dart';
 import 'package:air_quality/pages/covid.dart';
-import 'package:air_quality/pages/graph.dart';
+import 'package:air_quality/pages/graph.dart.bak';
 import 'package:air_quality/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
               depth: 6,
               intensity: 0.5,
             ),
-            home: Home(),
+            home: COVID(),
           );
         }
 

@@ -75,7 +75,6 @@ class _CO2State extends State<CO2> with SingleTickerProviderStateMixin {
 
   init() async {
     listTips = await getTips("co2tips");
-    var html = await ParseHTML.getInfoCOVID();
     print(listTips);
     print(listTips.length);
     co2 = widget.value ?? 0;

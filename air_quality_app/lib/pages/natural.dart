@@ -73,7 +73,6 @@ class _NaturalState extends State<Natural> with SingleTickerProviderStateMixin {
 
   init() async {
     listTips = await getTips("gastips");
-    var html = await ParseHTML.getInfoCOVID();
     print(listTips);
     print(listTips.length);
     gas = widget.value ?? 0;

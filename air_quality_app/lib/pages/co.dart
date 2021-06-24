@@ -73,7 +73,6 @@ class _COState extends State<CO> with SingleTickerProviderStateMixin {
 
   init() async {
     listTips = await getTips("cotips");
-    var html = await ParseHTML.getInfoCOVID();
     print(listTips);
     print(listTips.length);
     co = widget.value ?? 0.0;

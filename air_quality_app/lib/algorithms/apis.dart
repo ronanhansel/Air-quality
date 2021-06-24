@@ -52,39 +52,49 @@ class APIs {
     return await Geolocator.getCurrentPosition();
   }
 }
-class ParseHTML {
-  static getInfoCOVID() async {
-    final response = await http.get(Uri.parse(
-        'https://ncovi.vnpt.vn/thongtindichbenh_v2'));
-    final Map parsed = jsonDecode(response.body);
-    final content = parsed['data']['VN'];
-    return content;
-  }
-}
 
-class CSSEGICovidData {
+class CovidData {
   static Future<List> getRawDeathsData () async {
-    final response = (await http.get(Uri.parse('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv'))).body;
+    final response = (await http.get(Uri.parse('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master'
+        '/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv'))).body;
     String vnData = response.substring(response.indexOf("Vietnam"), response.indexOf(",West "));
-    // vnData= vnData.substring(vnData.indexOf(",", vnData.length ~/ 2), vnData.length);
     List data = vnData.split(",");
     return data;
   }
   static Future<List> getRawConfirmedData () async {
-    final response = (await http.get(Uri.parse('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv'))).body;
+    final response = (await http.get(Uri.parse('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master'
+        '/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv'))).body;
     String vnData = response.substring(response.indexOf("Vietnam"), response.indexOf(",West "));
-    // vnData = vnData.substring(vnData.indexOf(",", vnData.length ~/ 2), vnData.length);
     List data = vnData.split(",");
     return data;
   }
   static Future<List> getRawRecoveredData () async {
-    final response = (await http.get(Uri.parse('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv'))).body;
+    final response = (await http.get(Uri.parse('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master'
+        '/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv'))).body;
     String vnData = response.substring(response.indexOf("Vietnam"), response.indexOf(",West "));
-    // vnData = vnData.substring(vnData.indexOf(",", vnData.length ~/ 2), vnData.length);
     List data = vnData.split(",");
     return data;
   }
-  static Future<List> getRawDailyData () {
-
+  static Future<List> getJSONVaccinationData () async {
+    final response = (await http.get(Uri.parse('https://raw.githubusercontent.com/owid/covid-19-data/master'
+        '/public/data/vaccinations/vaccinations.json'))).body;
+    List vnData = jsonDecode(response);
+    // String dataStr = vnData[222].toString();
+    // Map dataMp = jsonDecode(dataStr);
+    List data = vnData[222]["data"];
+    /*
+    "country": "Vietnam",
+    "iso_code": "VNM",
+    "data": [
+    {
+    "date": "2021-03-07",
+    "total_vaccinations": 0,
+    "people_vaccinated": 0,
+    "people_fully_vaccinated": 0,
+    "total_vaccinations_per_hundred": 0.0,
+    "people_vaccinated_per_hundred": 0.0
+    },
+     */
+    return data;
   }
 }
