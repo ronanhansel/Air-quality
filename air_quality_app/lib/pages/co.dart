@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:air_quality/algorithms/apis.dart';
+import 'package:air_quality/algorithms/co_quality.dart';
 import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -73,8 +74,6 @@ class _COState extends State<CO> with SingleTickerProviderStateMixin {
 
   init() async {
     listTips = await getTips("cotips");
-    print(listTips);
-    print(listTips.length);
     co = widget.value ?? 0.0;
     getDataRepeat7();
   }
@@ -118,6 +117,51 @@ class _COState extends State<CO> with SingleTickerProviderStateMixin {
                 SizedBox(
                   height: 150,
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 15.0),
+                  child: Center(
+                    child: Container(
+                      height: 110,
+                      width: 300,
+                      child: NeumorphicButton(
+                        style: NeumorphicStyle(
+                          color: theme.variantColor,
+                        ),
+                        onPressed: () {},
+                        child: DefaultTextStyle(
+                          style: TextStyle(
+                              color: theme.defaultTextColor, fontSize: 15),
+                          child: Wrap(
+                            children: [
+                              Center(
+                                child: Icon(
+                                  Icons.lightbulb_outline_rounded,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Center(
+                                child: Text(
+                                  "Không khí hiện tại",
+                                  style:
+                                  TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text("${getcoquad(co)}"),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
               ],
             ),
           ),
@@ -220,7 +264,6 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   Widget buildBackground(double shrinkOffset, Artboard _riveArtboard,
       NeumorphicThemeData theme, double co) {
-    print(co);
     return Opacity(
         opacity: disappear(shrinkOffset),
         child: artBoard(_riveArtboard, theme, co, colorShadow));
@@ -317,52 +360,52 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
 }
 
 Widget content(NeumorphicThemeData theme, var listTips) => SliverList(
-  delegate: SliverChildBuilderDelegate(
+      delegate: SliverChildBuilderDelegate(
         (context, index) {
-      String key = listTips.keys.elementAt(index);
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 15.0),
-        child: Center(
-          child: Container(
-            height: 150,
-            width: 300,
-            child: NeumorphicButton(
-              style: NeumorphicStyle(
-                color: theme.variantColor,
-              ),
-              onPressed: () {},
-              child: DefaultTextStyle(
-                style:
-                TextStyle(color: theme.defaultTextColor, fontSize: 15),
-                child: Wrap(
-                  children: [
-                    Row(
+          String key = listTips.keys.elementAt(index);
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 15.0),
+            child: Center(
+              child: Container(
+                height: 150,
+                width: 300,
+                child: NeumorphicButton(
+                  style: NeumorphicStyle(
+                    color: theme.variantColor,
+                  ),
+                  onPressed: () {},
+                  child: DefaultTextStyle(
+                    style:
+                        TextStyle(color: theme.defaultTextColor, fontSize: 15),
+                    child: Wrap(
                       children: [
-                        Icon(
-                          Icons.lightbulb_outline_rounded,
-                          color: theme.defaultTextColor,
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.lightbulb_outline_rounded,
+                              color: theme.defaultTextColor,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "$key",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          "$key",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text("${listTips[key]}"),
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text("${listTips[key]}"),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-      );
-    },
-    childCount: listTips.length,
-  ),
-);
+          );
+        },
+        childCount: listTips.length,
+      ),
+    );

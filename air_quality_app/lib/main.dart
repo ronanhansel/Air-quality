@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
               depth: 6,
               intensity: 0.5,
             ),
-            home: COVID(),
+            home: Home(),
           );
         }
 

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:air_quality/algorithms/apis.dart';
+import 'package:air_quality/algorithms/co2_quality.dart';
 import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -75,8 +76,6 @@ class _CO2State extends State<CO2> with SingleTickerProviderStateMixin {
 
   init() async {
     listTips = await getTips("co2tips");
-    print(listTips);
-    print(listTips.length);
     co2 = widget.value ?? 0;
     getDataRepeat135();
   }
@@ -120,6 +119,52 @@ class _CO2State extends State<CO2> with SingleTickerProviderStateMixin {
                 SizedBox(
                   height: 150,
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 15.0),
+                  child: Center(
+                    child: Container(
+                      height: 110,
+                      width: 300,
+                      child: NeumorphicButton(
+                        style: NeumorphicStyle(
+                          color: theme.variantColor,
+                        ),
+                        onPressed: () {},
+                        child: DefaultTextStyle(
+                          style: TextStyle(
+                              color: theme.defaultTextColor, fontSize: 15),
+                          child: Wrap(
+                            children: [
+                              Center(
+                                child: Icon(
+                                  Icons.lightbulb_outline_rounded,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Center(
+                                child: Text(
+                                  "Không khí hiện tại",
+                                  style:
+                                  TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text("${getco2quad(co2)}"),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+
               ],
             ),
           ),

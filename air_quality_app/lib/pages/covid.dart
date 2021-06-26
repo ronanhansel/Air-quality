@@ -3,7 +3,6 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:air_quality/algorithms/apis.dart';
-import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:air_quality/charts/line.dart' show line;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,6 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:intl/intl.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 
-// ignore: must_be_immutable
 class COVID extends StatefulWidget {
   @override
   _CO2State createState() => _CO2State();
@@ -30,8 +28,9 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
   bool loading = true;
   DateTime today = DateTime.now();
   List<String> dateVaccine = [];
-  List totalVaccine = [];
-  List fullyVaccine = [0];
+  List<int> totalVaccine = [];
+  List<int> fullyVaccine = [0];
+  Map<String, dynamic> dataInner = {};
   DateFormat dateFormat = DateFormat("yyyy-MM-dd");
 
   futureExec() async {
@@ -65,18 +64,21 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
     //Generate Split data into Lists to work with graphs
     _vaccine.forEach((val) {
       String sVal = val.toString();
-      sVal = sVal.replaceAll("{", "{\"").replaceAll(", ", "\", \"").replaceAll(": ", "\": \"").replaceAll("}", "\"}");
-      Map<String, dynamic> dataInner = codec.decode("""$sVal""");
+      sVal = sVal
+          .replaceAll("{", "{\"")
+          .replaceAll(", ", "\", \"")
+          .replaceAll(": ", "\": \"")
+          .replaceAll("}", "\"}");
+      dataInner = codec.decode("""$sVal""");
       dateVaccine.add("'${dataInner["date"]}'");
       //Check if the data is present
-      totalVaccine.add(dataInner["total_vaccinations"] ?? totalVaccine[count - 1]);
-      fullyVaccine.add(dataInner["people_fully_vaccinated"] ?? fullyVaccine[count]);
+      totalVaccine.add(int.parse(dataInner["total_vaccinations"] ??
+          totalVaccine[count - 1].toString()));
+      fullyVaccine.add(int.parse(dataInner["people_fully_vaccinated"] ??
+          fullyVaccine[count].toString()));
       count++;
     });
     fullyVaccine.remove(0);
-    print(dateVaccine.length);
-    print(totalVaccine.length);
-    print(fullyVaccine.length);
     if (mounted)
       setState(() {
         loading = false;
@@ -84,7 +86,7 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
   }
 
   double opacity;
-  String bg;
+  Image bg;
 
   @override
   void initState() {
@@ -95,9 +97,11 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
   }
 
   init() async {
-    Map listImages = await getImages();
-    int rand = Random().nextInt(listImages['bg'].length);
-    bg = '${await listImages['bg'][rand]}';
+    int rand = Random().nextInt(2);
+    bg = Image.asset(
+      'assets/$rand.jpg',
+      fit: BoxFit.cover,
+    );
   }
 
   @override
@@ -123,67 +127,223 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
           SliverList(
             delegate: SliverChildListDelegate(
               [
+                Container(
+                  height: 265,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      child: !loading
+                          ? NeumorphicButton(
+                        onPressed: () {},
+                            child: Container(
+                                margin: EdgeInsets.all(5),
+                                child: DefaultTextStyle(
+                                  style: TextStyle(
+                                      color: theme.defaultTextColor,
+                                      fontSize: 11),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "VietNam",
+                                        style: TextStyle(fontSize: 35),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Tổng số ca"),
+                                              Text(
+                                                "${int.parse(_confirmed[_confirmed.length - 1])}",
+                                                style: TextStyle(
+                                                  fontSize: 35,
+                                                ),
+                                              ),
+                                              Text(
+                                                  "Số ca hôm qua: ${int.parse(_confirmed[_confirmed.length - 1]) - int.parse(_confirmed[_confirmed.length - 2])}"),
+                                            ],
+                                          ),
+                                          Expanded(child: SizedBox()),
+                                          Container(
+                                            width: 2,
+                                            height: 50,
+                                            color: theme.defaultTextColor,
+                                          ),
+                                          Expanded(child: SizedBox()),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Tổng số tử vong"),
+                                              Text(
+                                                "${int.parse(_deaths[_deaths.length - 1])}",
+                                                style: TextStyle(
+                                                  fontSize: 35,
+                                                ),
+                                              ),
+                                              Text(
+                                                  "Số tử vong hôm qua: ${int.parse(_deaths[_deaths.length - 1]) - int.parse(_deaths[_deaths.length - 2])}"),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 7,
+                                      ),
+                                      Center(
+                                        child: Container(
+                                          width: 250,
+                                          height: 2,
+                                          color: theme.defaultTextColor,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 7,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Tổng số liều đã tiêm"),
+                                              Text(
+                                                "${totalVaccine[totalVaccine.length - 1]}",
+                                                style: TextStyle(
+                                                  fontSize: 35,
+                                                ),
+                                              ),
+                                              Text(
+                                                  "Số liều hôm qua: ${totalVaccine[totalVaccine.length - 1] - totalVaccine[totalVaccine.length - 2]}"),
+                                            ],
+                                          ),
+                                          Expanded(child: SizedBox()),
+                                          Container(
+                                            width: 2,
+                                            height: 50,
+                                            color: theme.defaultTextColor,
+                                          ),
+                                          Expanded(child: SizedBox()),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Số người đã tiêm đủ liều"),
+                                              Text(
+                                                "${fullyVaccine[fullyVaccine.length - 1]}",
+                                                style: TextStyle(
+                                                  fontSize: 35,
+                                                ),
+                                              ),
+                                              Text(
+                                                  "Phần trăm: ${dataInner["people_vaccinated_per_hundred"] ?? 0}"),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          )
+                          : Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              child: SkeletonAnimation(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                child: Container(),
+                              ),
+                            ),
+                      width: 500,
+                      height: 300,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(23.0),
+                  child: Text(
+                    "Biểu đồ thống kê",
+                    style: TextStyle(
+                        color: theme.defaultTextColor, fontSize: 35),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     child: !loading
-                        ? Echarts(
-                            extensions: [line],
-                            theme: 'line',
-                            option: '''
-                                        {
-                            tooltip: {
-                                trigger: 'axis'
+                        ? ClipRRect(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10)),
+                            child: Echarts(
+                              extensions: [line],
+                              theme: 'line',
+                              option: '''
+                                          {
+                              tooltip: {
+                                  trigger: 'axis'
+                              },
+                              grid: {
+                                  left: '3%',
+                                  right: '4%',
+                                  bottom: '3%',
+                                  containLabel: true
+                              },
+                              legend: {
+                                data: ['Nhiễm bệnh',  'Đã khỏi', 'Tử vong']
+                              },
+                              xAxis: {
+                                type: 'category',
+                                data: $_dates
+                              },
+                              yAxis: {
+                                type: 'value'
+                              },
+                              series: [{
+                                  name: 'Nhiễm bệnh',
+                                data: $_confirmed,
+                                type: 'line',
+                                markPoint: {
+                                data: [
+                                    {type: 'max', name: 'latest'},
+                                ]
                             },
-                            grid: {
-                                left: '3%',
-                                right: '4%',
-                                bottom: '3%',
-                                containLabel: true
+                              },
+                              {
+                                  name: 'Đã khỏi',
+                                data: $_recovered,
+                                type: 'line',
+                                markPoint: {
+                                data: [
+                                    {type: 'max', name: 'latest'},
+                                ]
                             },
-                            legend: {
-                              data: ['Nhiễm bệnh',  'Đã khỏi', 'Tử vong']
+                              },
+                              {
+                                  name: 'Tử vong',
+                                data: $_deaths,
+                                type: 'line',
+                                markPoint: {
+                                data: [
+                                    {type: 'max', name: 'latest'},
+                                ]
                             },
-                            xAxis: {
-                              type: 'category',
-                              data: $_dates
-                            },
-                            yAxis: {
-                              type: 'value'
-                            },
-                            series: [{
-                                name: 'Nhiễm bệnh',
-                              data: $_confirmed,
-                              type: 'line',
-                              markPoint: {
-                              data: [
-                                  {type: 'max', name: 'latest'},
+                              },
                               ]
-                          },
-                            },
-                            {
-                                name: 'Đã khỏi',
-                              data: $_recovered,
-                              type: 'line',
-                              markPoint: {
-                              data: [
-                                  {type: 'max', name: 'latest'},
-                              ]
-                          },
-                            },
-                            {
-                                name: 'Tử vong',
-                              data: $_deaths,
-                              type: 'line',
-                              markPoint: {
-                              data: [
-                                  {type: 'max', name: 'latest'},
-                              ]
-                          },
-                            },
-                            ]
                     }
                    ''',
+                            ),
                           )
                         : Container(
                             decoration: BoxDecoration(
@@ -205,83 +365,96 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     child: !loading
-                        ? Echarts(
-                      extensions: [line],
-                      theme: 'line',
-                      option:
-                      '''
-                                      {
-                                          tooltip: {
-                                              trigger: 'axis',
-                                              axisPointer: {
-                                                  type: 'cross',
-                                                  label: {
-                                                      backgroundColor: '#6a7985'
-                                                  }
-                                              }
-                                          },
-                                          legend: {
-                                              data: ['Tiêm 1 mũi', 'Tiêm 2 mũi']
-                                          },
-                                      
-                                          grid: {
-                                              left: '3%',
-                                              right: '4%',
-                                              bottom: '3%',
-                                              containLabel: true
-                                          },
-                                          xAxis: [
-                                              {
-                                                  type: 'category',
-                                                  boundaryGap: false,
-                                                  data: $dateVaccine
-                                              }
-                                          ],
-                                          yAxis: [
-                                              {
-                                                  type: 'value'
-                                              }
-                                          ],
-                                          series: [
-                                              {
-                                                  name: 'Đã tiêm',
-                                                  type: 'line',
-                                                  areaStyle: {},
-                                                  emphasis: {
-                                                      focus: 'series'
-                                                  },
-                                                  data: $totalVaccine
-                                              },
-                                      
-                                              {
-                                                  name: 'Tiêm 2 mũi',
-                                                  type: 'line',
-                                                  label: {
-                                                      show: true,
-                                                      position: 'top'
-                                                  },
-                                                  areaStyle: {},
-                                                  emphasis: {
-                                                      focus: 'series'
-                                                  },
-                                                  data: $totalVaccine
-                                              }
-                                          ]
-                                      }
+                        ? ClipRRect(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10)),
+                            child: Echarts(
+                              extensions: [line],
+                              theme: 'line',
+                              option: '''
+                                        {
+                                            tooltip: {
+                                                trigger: 'axis',
+                                                axisPointer: {
+                                                    type: 'cross',
+                                                    label: {
+                                                        backgroundColor: '#6a7985'
+                                                    }
+                                                }
+                                            },
+                                            legend: {
+                                                data: ['Đã tiêm', 'Đủ liều']
+                                            },
+                                        
+                                            grid: {
+                                                left: '3%',
+                                                right: '4%',
+                                                bottom: '3%',
+                                                containLabel: true
+                                            },
+                                            xAxis: [
+                                                {
+                                                    type: 'category',
+                                                    boundaryGap: false,
+                                                    data: $dateVaccine
+                                                }
+                                            ],
+                                            yAxis: [
+                                                {
+                                                    type: 'value'
+                                                }
+                                            ],
+                                            series: [
+                                                {
+                                                    name: 'Đã tiêm',
+                                                    type: 'line',
+                                                    markPoint: {
+                                                        data: [
+                                                            {type: 'max', name: 'latest'},
+                                                        ]
+                                                    },
+                                                    areaStyle: {},
+                                                    emphasis: {
+                                                        focus: 'series'
+                                                    },
+                                                    data: $totalVaccine
+                                                },
+                                        
+                                                {
+                                                    name: 'Đủ liều',
+                                                    type: 'line',
+                                                    markPoint: {
+                                                        data: [
+                                                            {type: 'max', name: 'latest'},
+                                                        ]
+                                                    },
+                                                    label: {
+                                                        show: true,
+                                                        position: 'top'
+                                                    },
+                                                    areaStyle: {},
+                                                    emphasis: {
+                                                        focus: 'series'
+                                                    },
+                                                    data: $fullyVaccine
+                                                }
+                                            ]
+                                        }
                    ''',
-                    )
+                            ),
+                          )
                         : Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      child: SkeletonAnimation(
-                        borderRadius:
-                        BorderRadius.all(Radius.circular(10)),
-                        child: Container(),
-                      ),
-                    ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                            child: SkeletonAnimation(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              child: Container(),
+                            ),
+                          ),
                     width: 500,
                     height: 300,
                   ),
@@ -297,7 +470,7 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
 
 class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
   final double expandedHeight;
-  final String bg;
+  final Image bg;
   final NeumorphicThemeData theme;
 
   CustomHeaderDelegate({
@@ -342,12 +515,12 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget buildBackground(
-      double shrinkOffset, String bg, NeumorphicThemeData theme) {
+      double shrinkOffset, Image bg, NeumorphicThemeData theme) {
     return Opacity(
         opacity: disappear(shrinkOffset), child: artBoard(bg, theme));
   }
 
-  Widget artBoard(String bg, NeumorphicThemeData theme) {
+  Widget artBoard(Image bg, NeumorphicThemeData theme) {
     return bg == null
         ? const SizedBox(
             height: 300,
@@ -362,12 +535,7 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
                 colors: [Colors.blue, Colors.transparent],
               ),
             ),
-            child: bg.isNotEmpty
-                ? Image.network(
-                    bg,
-                    fit: BoxFit.cover,
-                  )
-                : Container());
+            child: bg);
   }
 
   double subtract(double i, double shrinkOffset, double lim) {
