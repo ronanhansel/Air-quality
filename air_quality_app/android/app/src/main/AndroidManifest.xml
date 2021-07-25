@@ -12,8 +12,8 @@
     <application
         android:usesCleartextTraffic="true"
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Airify"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Airter"
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
