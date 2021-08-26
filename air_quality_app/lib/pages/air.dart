@@ -32,7 +32,6 @@ class _AirState extends State<Air> {
     components = forecast[0]['components'].toString();
     print(listLocation);
     var listContent = components.substring(1, components.length).split(", ");
-    int i = 0;
     listContent.reversed.forEach((child) {
       String elementString = child.toString().replaceAll('[]{}', '');
       List element = elementString.split(', ');
@@ -43,7 +42,6 @@ class _AirState extends State<Air> {
             .substring(value.indexOf(": "), value.length)
             .replaceAll(':', '');
       });
-      i++;
     });
     print(mapContent);
     setState(() {

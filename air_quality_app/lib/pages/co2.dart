@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:air_quality/algorithms/apis.dart';
 import 'package:air_quality/algorithms/co2_quality.dart';
 import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,6 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:rive/rive.dart' hide LinearGradient;
 import 'package:skeleton_text/skeleton_text.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 
 // ignore: must_be_immutable
@@ -227,7 +225,6 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    final top = expandedHeight - shrinkOffset - 70;
     return Stack(
       fit: StackFit.expand,
       clipBehavior: Clip.none,

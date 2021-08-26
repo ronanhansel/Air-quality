@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'package:air_quality/algorithms/apis.dart';
 import 'package:air_quality/algorithms/storage.dart';
 import 'package:air_quality/pages/air.dart';
-import 'package:air_quality/pages/air_quality.dart';
 import 'package:animate_icons/animate_icons.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -28,7 +26,6 @@ class _HomeState extends State<Home> {
   }
 
   Artboard _riveArtboard;
-  RiveAnimationController _controller;
   bool absorb = false;
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   bool touch = true;
@@ -46,7 +43,7 @@ class _HomeState extends State<Home> {
         if (file != null) {
           var artboard = file.mainArtboard;
           artboard.addController(
-            _controller = SimpleAnimation('start'),
+            SimpleAnimation('start'),
           );
           if (mounted) {
             setState(() => _riveArtboard = artboard);

@@ -11,6 +11,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:intl/intl.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 
+
 class COVID extends StatefulWidget {
   @override
   _CO2State createState() => _CO2State();
@@ -79,6 +80,10 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin, Automa
       count++;
     });
     fullyVaccine.remove(0);
+
+
+
+
     if (mounted)
       setState(() {
         loading = false;

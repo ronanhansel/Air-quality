@@ -224,7 +224,6 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    final top = expandedHeight - shrinkOffset - 70;
     return Stack(
       fit: StackFit.expand,
       clipBehavior: Clip.none,

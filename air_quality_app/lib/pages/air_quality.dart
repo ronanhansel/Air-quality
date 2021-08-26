@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:air_quality/algorithms/apis.dart';
 
 import 'package:air_quality/algorithms/getvalues.dart';
@@ -15,7 +14,6 @@ import 'package:rive/rive.dart' hide LinearGradient;
 import 'package:skeleton_text/skeleton_text.dart';
 import 'package:air_quality/pages/co2.dart';
 
-import 'covid.dart';
 
 class AirQuality extends StatefulWidget {
   @override

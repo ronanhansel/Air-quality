@@ -85,20 +85,6 @@ class CovidData {
       countries.add(vnData["country"] ?? "null");
     });
     List data = rawData[countries.indexOf("Vietnam", 190)]["data"];
-
-    /*
-    "country": "Vietnam",
-    "iso_code": "VNM",
-    "data": [
-    {
-    "date": "2021-03-07",
-    "total_vaccinations": 0,
-    "people_vaccinated": 0,
-    "people_fully_vaccinated": 0,
-    "total_vaccinations_per_hundred": 0.0,
-    "people_vaccinated_per_hundred": 0.0
-    },
-     */
     return data;
   }
 }

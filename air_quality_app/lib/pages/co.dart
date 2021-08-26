@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:air_quality/algorithms/apis.dart';
 import 'package:air_quality/algorithms/co_quality.dart';
 import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:flutter/material.dart';
@@ -224,7 +223,6 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    final top = expandedHeight - shrinkOffset - 70;
     return Stack(
       fit: StackFit.expand,
       clipBehavior: Clip.none,
