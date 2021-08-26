@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:air_quality/algorithms/apis.dart';
 import 'package:air_quality/algorithms/gas_quality.dart';
 import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:flutter/material.dart';

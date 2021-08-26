@@ -16,7 +16,7 @@ class COVID extends StatefulWidget {
   _CO2State createState() => _CO2State();
 }
 
-class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
+class _CO2State extends State<COVID> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   //Graph
   JsonCodec codec = JsonCodec();
   List _xAxis;
@@ -111,6 +111,7 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final theme = NeumorphicTheme.currentTheme(context);
     return Scaffold(
       body: CustomScrollView(
@@ -146,7 +147,7 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "VietNam",
+                                        "Viet Nam",
                                         style: TextStyle(fontSize: 35),
                                       ),
                                       SizedBox(
@@ -164,7 +165,7 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
                                               Text(
                                                 "${int.parse(_confirmed[_confirmed.length - 1])}",
                                                 style: TextStyle(
-                                                  fontSize: 35,
+                                                  fontSize: 25,
                                                 ),
                                               ),
                                               Text(
@@ -186,7 +187,7 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
                                               Text(
                                                 "${int.parse(_deaths[_deaths.length - 1])}",
                                                 style: TextStyle(
-                                                  fontSize: 35,
+                                                  fontSize: 25,
                                                 ),
                                               ),
                                               Text(
@@ -218,7 +219,7 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
                                               Text(
                                                 "${totalVaccine[totalVaccine.length - 1]}",
                                                 style: TextStyle(
-                                                  fontSize: 35,
+                                                  fontSize: 25,
                                                 ),
                                               ),
                                               Text(
@@ -240,7 +241,7 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
                                               Text(
                                                 "${fullyVaccine[fullyVaccine.length - 1]}",
                                                 style: TextStyle(
-                                                  fontSize: 35,
+                                                  fontSize: 25,
                                                 ),
                                               ),
                                               Text(
@@ -466,6 +467,9 @@ class _CO2State extends State<COVID> with SingleTickerProviderStateMixin {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
@@ -486,7 +490,7 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
       fit: StackFit.expand,
       clipBehavior: Clip.none,
       children: [
-        buildBackground(shrinkOffset, bg, theme),
+        buildBackground(context, shrinkOffset, bg, theme),
         buildAppBar(context, shrinkOffset),
       ],
     );
@@ -514,7 +518,7 @@ class CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
     );
   }
 
-  Widget buildBackground(
+  Widget buildBackground(BuildContext context,
       double shrinkOffset, Image bg, NeumorphicThemeData theme) {
     return Opacity(
         opacity: disappear(shrinkOffset), child: artBoard(bg, theme));

@@ -78,10 +78,14 @@ class CovidData {
   static Future<List> getJSONVaccinationData () async {
     final response = (await http.get(Uri.parse('https://raw.githubusercontent.com/owid/covid-19-data/master'
         '/public/data/vaccinations/vaccinations.json'))).body;
-    List vnData = jsonDecode(response);
-    // String dataStr = vnData[222].toString();
-    // Map dataMp = jsonDecode(dataStr);
-    List data = vnData[222]["data"];
+    List<dynamic> rawData = jsonDecode(response);
+    List<String> countries = [];
+    rawData.forEach((element) {
+      Map<String, dynamic> vnData = element;
+      countries.add(vnData["country"] ?? "null");
+    });
+    List data = rawData[countries.indexOf("Vietnam", 190)]["data"];
+
     /*
     "country": "Vietnam",
     "iso_code": "VNM",
