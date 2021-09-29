@@ -5,7 +5,7 @@ import 'package:air_quality/algorithms/storage.dart';
 import 'package:air_quality/pages/air_quality.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart' hide AnimatedScale;
 
 String api = 'ff677b8db486de02b5effc8891a86899';
 var forecast;
@@ -95,7 +95,7 @@ class _AirState extends State<Air> {
               onPressed: () {},
               child: Center(
                 child: DefaultTextStyle(
-                  style: TextStyle(color: theme.defaultTextColor, fontSize: 17),
+                  style: TextStyle(color: theme.defaultTextColor, fontSize: 15),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Wrap(
@@ -136,7 +136,7 @@ class _AirState extends State<Air> {
             absorbing: absorb,
             child: NeumorphicButton(
               child: Text(
-                "Đánh giá chất lương không khí bằng Airify",
+                "Đánh giá chất lượng không khí bằng Airify",
                 style: TextStyle(
                   color: theme.defaultTextColor
                 ),

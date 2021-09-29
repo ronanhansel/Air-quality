@@ -7,7 +7,7 @@ import 'package:air_quality/charts/line.dart' show line;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_echarts/flutter_echarts.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart' hide AnimatedScale;
 import 'package:intl/intl.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 

@@ -4,7 +4,7 @@ import 'package:air_quality/algorithms/co_quality.dart';
 import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart' hide AnimatedScale;
 import 'package:rive/rive.dart' hide LinearGradient;
 import 'package:skeleton_text/skeleton_text.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
@@ -135,7 +135,7 @@ class _COState extends State<CO> with SingleTickerProviderStateMixin {
                               Center(
                                 child: Icon(
                                   Icons.lightbulb_outline_rounded,
-                                  color: Colors.red,
+                                  color: colorShadow,
                                 ),
                               ),
                               SizedBox(

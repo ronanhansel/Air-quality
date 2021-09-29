@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:air_quality/algorithms/apis.dart';
-
 import 'package:air_quality/algorithms/getvalues.dart';
 import 'package:air_quality/algorithms/quality.dart';
 import 'package:air_quality/algorithms/storage.dart';
@@ -9,11 +8,10 @@ import 'package:air_quality/pages/natural.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart' hide AnimatedScale;
 import 'package:rive/rive.dart' hide LinearGradient;
-import 'package:skeleton_text/skeleton_text.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:air_quality/pages/co2.dart';
-
 
 class AirQuality extends StatefulWidget {
   @override
@@ -115,6 +113,9 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
     return number;
   }
 
+  bool updated = false;
+  int i = 0;
+
   getDataRepeat135() async {
     var number;
     database.onValue.listen((event) {
@@ -125,6 +126,10 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
           onethreefive = number.toInt();
           index = (five + seven + onethreefive) / 3;
           changestatus();
+          i++;
+          if (i > 3) {
+            updated = true;
+          }
         });
       }
     });
@@ -214,7 +219,6 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
     print(listLocation);
   }
 
-
   initial() async {
     status = await quality135();
     getDataRepeat7();
@@ -229,11 +233,12 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = NeumorphicTheme.currentTheme(context);
+
     return Scaffold(
       body: Center(
         child: FutureBuilder(
           builder: (BuildContext context, AsyncSnapshot<Widget> widget) {
-            if (onethreefive == 0) {
+            if (updated == false) {
               return SkeletonLoading(context, theme);
             }
             show();
@@ -291,221 +296,224 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
                     ),
                   ),
                   SliverList(
-                      delegate: SliverChildListDelegate([
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(
-                        'Mức độ chất lượng không khí: $status',
-                        style: TextStyle(
-                            color: theme.defaultTextColor, fontSize: 20),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: 100,
-                            width: 100,
-                            child: NeumorphicButton(
-                              onPressed: () {
-                                Timer(
-                                    Duration(milliseconds: 300),
-                                    () => Navigator.push(
-                                        context,
-                                        CupertinoPageRoute(
-                                          builder: (context) =>
-                                              CO2(value: onethreefive),
-                                        )));
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Stack(
-                                  children: [
-                                    Text(
-                                      'CO2 level',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: theme.defaultTextColor,
-                                      ),
-                                    ),
-                                    Center(
-                                      child: Text(
-                                        '$onethreefive',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: theme.defaultTextColor,
+                    delegate: SliverChildListDelegate(
+                      [
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(
+                            'Mức độ chất lượng không khí: $status',
+                            style: TextStyle(
+                                color: theme.defaultTextColor, fontSize: 20),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 100,
+                                width: 100,
+                                child: NeumorphicButton(
+                                  onPressed: () {
+                                    Timer(
+                                        Duration(milliseconds: 300),
+                                        () => Navigator.push(
+                                            context,
+                                            CupertinoPageRoute(
+                                              builder: (context) =>
+                                                  CO2(value: onethreefive),
+                                            )));
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Stack(
+                                      children: [
+                                        Text(
+                                          'CO2 level',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: theme.defaultTextColor,
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Text(
-                                        'ppm',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          color: theme.defaultTextColor,
+                                        Center(
+                                          child: Text(
+                                            '$onethreefive',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: theme.defaultTextColor,
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                        Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: Text(
+                                            'ppm',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: theme.defaultTextColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                          Expanded(child: SizedBox()),
-                          Container(
-                            height: 100,
-                            width: 100,
-                            child: NeumorphicButton(
-                              onPressed: () {
-                                Timer(
-                                    Duration(milliseconds: 300),
-                                    () => Navigator.push(
-                                        context,
-                                        CupertinoPageRoute(
-                                          builder: (context) =>
-                                              CO(value: seven),
-                                        )));
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Stack(
-                                  children: [
-                                    Text(
-                                      'CO level',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: theme.defaultTextColor,
-                                      ),
-                                    ),
-                                    Center(
-                                      child: Text(
-                                        '$seven',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: theme.defaultTextColor,
+                              Expanded(child: SizedBox()),
+                              Container(
+                                height: 100,
+                                width: 100,
+                                child: NeumorphicButton(
+                                  onPressed: () {
+                                    Timer(
+                                        Duration(milliseconds: 300),
+                                        () => Navigator.push(
+                                            context,
+                                            CupertinoPageRoute(
+                                              builder: (context) =>
+                                                  CO(value: seven),
+                                            )));
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Stack(
+                                      children: [
+                                        Text(
+                                          'CO level',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: theme.defaultTextColor,
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Text(
-                                        'ppm',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          color: theme.defaultTextColor,
+                                        Center(
+                                          child: Text(
+                                            '$seven',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: theme.defaultTextColor,
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                        Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: Text(
+                                            'ppm',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: theme.defaultTextColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                          Expanded(child: SizedBox()),
-                          Container(
-                            height: 100,
-                            width: 100,
-                            child: NeumorphicButton(
-                              onPressed: () {
-                                Timer(
-                                    Duration(milliseconds: 300),
-                                    () => Navigator.push(
-                                        context,
-                                        CupertinoPageRoute(
-                                          builder: (context) =>
-                                              Natural(value: five),
-                                        )));
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Stack(
-                                  children: [
-                                    Text(
-                                      'Gas level',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: theme.defaultTextColor,
-                                      ),
-                                    ),
-                                    Center(
-                                      child: Text(
-                                        '$five',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: theme.defaultTextColor,
+                              Expanded(child: SizedBox()),
+                              Container(
+                                height: 100,
+                                width: 100,
+                                child: NeumorphicButton(
+                                  onPressed: () {
+                                    Timer(
+                                        Duration(milliseconds: 300),
+                                        () => Navigator.push(
+                                            context,
+                                            CupertinoPageRoute(
+                                              builder: (context) =>
+                                                  Natural(value: five),
+                                            )));
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Stack(
+                                      children: [
+                                        Text(
+                                          'Gas level',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: theme.defaultTextColor,
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Text(
-                                        'ppm',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          color: theme.defaultTextColor,
+                                        Center(
+                                          child: Text(
+                                            '$five',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: theme.defaultTextColor,
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                        Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: Text(
+                                            'ppm',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: theme.defaultTextColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 3,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: NeumorphicButton(
-                            style: NeumorphicStyle(
-                              color: theme.variantColor,
-                            ),
-                            child: Container(
-                              width: 300,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: theme.variantColor,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: Text(
-                                    'Độ ẩm: $humid%, Nhiệt độ: $temp C',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: theme.defaultTextColor,
+                        ),
+                        SizedBox(
+                          height: 3,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Center(
+                              child: NeumorphicButton(
+                                style: NeumorphicStyle(
+                                  color: theme.variantColor,
+                                ),
+                                child: Container(
+                                  width: 300,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: theme.variantColor,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Center(
+                                      child: Text(
+                                        'Độ ẩm: $humid%, Nhiệt độ: $temp C',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: theme.defaultTextColor,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 300,
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 300,
-                    ),
-                  ]))
+                  ),
                 ],
               ),
             );
@@ -517,172 +525,22 @@ class _AirQualityState extends State<AirQuality> with TickerProviderStateMixin {
 }
 
 Widget SkeletonLoading(BuildContext context, NeumorphicThemeData theme) {
-  return ListView(
-    scrollDirection: Axis.vertical,
-    physics: BouncingScrollPhysics(),
-    children: [
-      Align(
-        alignment: Alignment.centerLeft,
-        child: IconButton(
-          color: theme.defaultTextColor,
-          icon: Icon(Icons.arrow_back),
-          onPressed: () async {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                SkeletonAnimation(
-                  shimmerColor: Colors.grey,
-                  borderRadius: BorderRadius.circular(25),
-                  shimmerDuration: 1000,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: Text('Air quality',
-                        style:
-                            TextStyle(color: Colors.transparent, fontSize: 40)),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SkeletonAnimation(
-                  shimmerColor: Colors.grey,
-                  borderRadius: BorderRadius.circular(25),
-                  shimmerDuration: 1000,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: Text(' suh',
-                        style:
-                            TextStyle(color: Colors.transparent, fontSize: 40)),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Row(
-          children: [
-            SkeletonAnimation(
-              shimmerColor: Colors.grey,
-              borderRadius: BorderRadius.circular(25),
-              shimmerDuration: 1000,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Text(
-                  'Mức độ chất lượng không khí:',
-                  style: TextStyle(fontSize: 20, color: Colors.transparent),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      SizedBox(
-        height: 20,
-      ),
-      Container(
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: SkeletonAnimation(
-                shimmerColor: Colors.grey,
-                borderRadius: BorderRadius.circular(10),
-                shimmerDuration: 1000,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  height: 100,
-                  width: 100,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: SkeletonAnimation(
-                shimmerColor: Colors.grey,
-                borderRadius: BorderRadius.circular(10),
-                shimmerDuration: 1000,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  height: 100,
-                  width: 100,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: SkeletonAnimation(
-                shimmerColor: Colors.grey,
-                borderRadius: BorderRadius.circular(10),
-                shimmerDuration: 1000,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  height: 100,
-                  width: 100,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      Center(
-        child: SkeletonAnimation(
-          shimmerColor: Colors.grey,
-          borderRadius: BorderRadius.circular(25),
-          shimmerDuration: 1000,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            height: 50,
-            width: 300,
+  return Center(
+    child: Container(
+      height: 100,
+      child: Column(
+        children: [
+          SpinKitCircle(
+            color: theme.accentColor,
           ),
-        ),
-      ),
-      SizedBox(
-        height: 3,
-      ),
-      SizedBox(
-        height: 20,
-      ),
-      Center(
-        child: SkeletonAnimation(
-          shimmerColor: Colors.grey,
-          borderRadius: BorderRadius.circular(10),
-          shimmerDuration: 1000,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+          Text(
+            'Đang đo lường, vui lòng mở Airify',
+            style: TextStyle(
+              color: theme.defaultTextColor
             ),
-            height: 300,
-            width: 300,
-          ),
-        ),
+          )
+        ],
       ),
-    ],
+    ),
   );
 }
